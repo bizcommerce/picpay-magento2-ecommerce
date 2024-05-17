@@ -100,7 +100,7 @@ General,Geral
 "Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account","Insira aqui o token usado para autenticar sua transação, esse token pode ser encontrado em sua conta PicPay"
 "Use Sandbox","Usar Ambiente de Testes"
 "If enabled, the transaction will be done in PicPay's test environment","Se habilitado, a transação será feita no ambiente de testes do PicPay"
-"Soft Descriptior","Soft Descriptior"
+"Soft Descriptor","Soft Descriptor"
 "Soft descriptor let merchants provide customers with a short information about the business that processed a charge","O descritor suave permite que os comerciantes forneçam aos clientes informações breves sobre o negócio que processou uma cobrança"
 "Max 13 characters","Máximo de 13 caracteres"
 "Show Payment Info at Success Page","Mostrar Informações de Pagamento na Página de Sucesso"

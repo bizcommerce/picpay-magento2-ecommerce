@@ -103,7 +103,7 @@ General,General
 "Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account","Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account"
 "Use Sandbox","Use Sandbox"
 "If enabled, the transaction will be done in PicPay's test environment","If enabled, the transaction will be done in PicPay's test environment"
-"Soft Descriptior","Soft Descriptior"
+"Soft Descriptor","Soft Descriptor"
 "Soft descriptor let merchants provide customers with a short information about the business that processed a charge","Soft descriptor let merchants provide customers with a short information about the business that processed a charge"
 "Max 13 characters","Max 13 characters"
 "Show Payment Info at Success Page","Show Payment Info at Success Page"
