@@ -432,7 +432,7 @@ class Order extends \Magento\Payment\Helper\Data
     {
         $order = $this->orderFactory->create();
         if ($chargeId) {
-            $order->loadByAttribute($chargeId, 'picpay_charge_id');
+            $order->loadByAttribute('picpay_charge_id', $chargeId);
         }
         return $order;
     }
