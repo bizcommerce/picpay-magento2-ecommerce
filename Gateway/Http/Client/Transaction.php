@@ -43,7 +43,7 @@ class Transaction implements ClientInterface
      */
     public function __construct(
         Api $api,
-        string $methodCode = 'picpay_payment'
+        string $methodCode = 'picpay_checkout'
     ) {
         $this->methodCode = $methodCode;
         $this->api = $api;

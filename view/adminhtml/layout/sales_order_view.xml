@@ -22,7 +22,7 @@
         <referenceContainer name="left">
             <referenceBlock name="sales_order_tabs">
                 <action method="addTab">
-                    <argument name="name" xsi:type="string">picpay_payment</argument>
+                    <argument name="name" xsi:type="string">picpay_checkout</argument>
                     <argument name="block" xsi:type="string">PicPay\Checkout\Block\Adminhtml\Order\View\Tab\PicPay</argument>
                 </action>
             </referenceBlock>
