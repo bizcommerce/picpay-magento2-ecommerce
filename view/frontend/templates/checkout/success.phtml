@@ -1,0 +1,25 @@
+<?php
+/**
+ * PicPay
+ *
+ *
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ */
+
+/**
+ * @var PicPay\Checkout\Block\Checkout\Success $block
+ * @see PicPay\Checkout\Block\Checkout\Success
+ */
+?>
+
+<div class="payment-method-information">
+    <div class="title"><?= __('Chosen payment method') ?></div>
+    <?= $block->getInfoBlockHtml() ?>
+</div>

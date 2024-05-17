@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Magento_Sales::sales">
+                    <resource id="PicPay_Checkout::menu" title="PicPay Checkout" translate="title" sortOrder="1000">
+                        <resource id="PicPay_Checkout::callbacks" title="CallBacks"/>
+                        <resource id="PicPay_Checkout::requests" title="Requests e Responses"/>
+                        <resource id="PicPay_Checkout::settings" title="Settings"/>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

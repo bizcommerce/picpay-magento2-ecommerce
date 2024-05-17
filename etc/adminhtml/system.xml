@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="picpay_checkout" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label">
+                <label>PicPay Checkout</label>
+                <include path="PicPay_Checkout::system/version.xml"/>
+                <include path="PicPay_Checkout::system/general.xml"/>
+                <include path="PicPay_Checkout::system/credit_card.xml"/>
+            </group>
+        </section>
+    </system>
+</config>

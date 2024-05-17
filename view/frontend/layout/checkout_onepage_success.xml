@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ */
+ -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="PicPay_Checkout::css/checkout.css" />
+        <script src="PicPay_Checkout::js/payments.js" />
+    </head>
+    <body>
+        <referenceContainer name="order.success.additional.info">
+            <block class="PicPay\Checkout\Block\Checkout\Success"
+                   name="picpay.payment.success"
+                   template="PicPay_Checkout::checkout/success.phtml"
+                   cacheable="false"
+                   ifconfig="picpay_checkout/general/show_payment_info"
+            />
+        </referenceContainer>
+    </body>
+</page>

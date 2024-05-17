@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * PicPay
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ * @copyright   Copyright (c) PicPay
+ *
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="PicPay_Checkout::css/grid.css"/>
+    </head>
+    <body>
+        <referenceContainer name="left">
+            <referenceBlock name="sales_order_tabs">
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">picpay_payment</argument>
+                    <argument name="block" xsi:type="string">PicPay\Checkout\Block\Adminhtml\Order\View\Tab\PicPay</argument>
+                </action>
+            </referenceBlock>
+        </referenceContainer>
+
+        <referenceContainer name="order_totals">
+            <block class="PicPay\Checkout\Block\Sales\Order\Totals\Interest" name="picpay_interest">
+                <action method="setBeforeCondition">
+                    <argument name="condition" xsi:type="string">shipping</argument>
+                </action>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

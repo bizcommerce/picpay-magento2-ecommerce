@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ *
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="PicPay_Checkout::css/grid.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <uiComponent name="picpay_checkout_payment_request_listing"/>
+        </referenceContainer>
+    </body>
+</page>

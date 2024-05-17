@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ *
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="PicPay\Checkout\Api\Data\CallbackInterface" type="PicPay\Checkout\Model\Callback"/>
+    <preference for="PicPay\Checkout\Api\CallbackRepositoryInterface" type="PicPay\Checkout\Model\ResourceModel\CallbackRepository"/>
+    <preference for="PicPay\Checkout\Api\Data\CallbackSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+
+    <preference for="PicPay\Checkout\Api\Data\RequestInterface" type="PicPay\Checkout\Model\Request"/>
+    <preference for="PicPay\Checkout\Api\RequestRepositoryInterface" type="PicPay\Checkout\Model\ResourceModel\RequestRepository"/>
+    <preference for="PicPay\Checkout\Api\Data\RequestSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="picpay_order_payment_can_void" type="PicPay\Checkout\Plugin\Order\Payment" />
+    </type>
+
+    <!-- LOG -->
+    <type name="PicPay\Checkout\Logger\Handler\System">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="PicPay\Checkout\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">picpay</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">PicPay\Checkout\Logger\Handler\System</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="PicPayPaymentCreditCardFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PicPay\Checkout\Block\Info\CreditCard</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PicPayCreditCardValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PicPayCreditCardValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PicPayCreditCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+    <!-- Configuration reader -->
+    <virtualType name="PicPayCreditCardConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PicPayCreditCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="order" xsi:type="string">PicPayCreditCardOrderCommand</item>
+                <item name="capture" xsi:type="string">PicPayCreditCardCaptureCommand</item>
+                <item name="void" xsi:type="string">PicPayPaymentRefundCommand</item>
+                <item name="cancel" xsi:type="string">PicPayPaymentRefundCommand</item>
+                <item name="refund" xsi:type="string">PicPayPaymentRefundCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PicPayCreditCardClientTransaction" type="PicPay\Checkout\Gateway\Http\Client\Transaction">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">picpay_checkout_cc</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PicPayCreditCardOrderCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PicPayCreditCardOrderRequest</argument>
+            <argument name="handler" xsi:type="object">PicPayCreditCardResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">PicPay\Checkout\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">PicPayCreditCardValidator</argument>
+            <argument name="client" xsi:type="object">PicPayCreditCardClientTransaction</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PicPayCreditCardCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PicPay\Checkout\Gateway\Request\CaptureRequest</argument>
+            <argument name="handler" xsi:type="object">PicPay\Checkout\Gateway\Response\CaptureHandler</argument>
+            <argument name="transferFactory" xsi:type="object">PicPay\Checkout\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PicPay\Checkout\Gateway\Http\Client\Capture</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund command -->
+    <virtualType name="PicPayPaymentRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PicPay\Checkout\Gateway\Request\RefundRequest</argument>
+            <argument name="handler" xsi:type="object">PicPay\Checkout\Gateway\Response\RefundHandler</argument>
+            <argument name="transferFactory" xsi:type="object">PicPay\Checkout\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PicPay\Checkout\Gateway\Http\Client\Refund</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PicPayCreditCardOrderRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">PicPayCreditCardTransactionRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Transaction Request -->
+    <virtualType name="PicPayCreditCardTransactionRequest" type="PicPay\Checkout\Gateway\Request\CreditCard\TransactionRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">PicPayCreditCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators Pool -->
+    <virtualType name="PicPayCreditCardValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">PicPayCreditCardCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PicPayCreditCardCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">PicPayCreditCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators -->
+    <virtualType name="PicPayCreditCardValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="responseCode" xsi:type="string">PicPay\Checkout\Gateway\Validator\ResponseCodeValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Response handlers -->
+    <virtualType name="PicPayCreditCardResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="transaction" xsi:type="string">PicPay\Checkout\Gateway\Response\CreditCard\TransactionHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="PicPayCreditCardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PicPayCreditCardConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers -->
+    <virtualType name="PicPayCreditCardConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PicPayCreditCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Info Blocks -->
+    <type name="PicPay\Checkout\Block\Info\CreditCard">
+        <arguments>
+            <argument name="config" xsi:type="object">PicPayCreditCardConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Admin Grids -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="picpay_checkout_payment_callback_listing_data_source" xsi:type="string">PicPayPaymentCallbackCollection</item>
+                <item name="picpay_checkout_payment_request_listing_data_source" xsi:type="string">PicPayPaymentRequestCollection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="PicPayPaymentCallbackCollection" type="PicPay\Checkout\Ui\DataProvider\Callback\Listing\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">picpay_checkout_callback</argument>
+            <argument name="resourceModel" xsi:type="string">PicPay\Checkout\Model\ResourceModel\Callback</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PicPayPaymentRequestCollection" type="PicPay\Checkout\Ui\DataProvider\Request\Listing\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">picpay_checkout_request</argument>
+            <argument name="resourceModel" xsi:type="string">PicPay\Checkout\Model\ResourceModel\Request</argument>
+        </arguments>
+    </virtualType>
+</config>
