@@ -1,0 +1,126 @@
+"PicPay - Callbacks","PicPay - Callbacks"
+"Don't forget to configure the Webhook URL in your PicPay account.","Don't forget to configure the Webhook URL in your PicPay account."
+"Webhook URL: %1","Webhook URL: %1"
+"More info <a href=""%1"" target=""_blank"">here</a>","More info <a href=""%1"" target=""_blank"">here</a>"
+"Module Version: v%1","Module Version: v%1"
+"Credit Card Type","Credit Card Type"
+"Credit Card Owner","Credit Card Owner"
+"Card Number","Card Number"
+Installments,Installments
+N/A,N/A
+"Interest Rate","Interest Rate"
+"Callback List","Callback List"
+"Request List","Request List"
+Content,Content
+Params,Params
+"Webhook %1","Webhook %1"
+"Error on get token","Error on get token"
+"There was an error with your card data, verify and try again.","There was an error with your card data, verify and try again."
+"There was an error processing your request.","There was an error processing your request."
+"Payment data object should be provided","Payment data object should be provided"
+"%1x of %2 (%3). Total: %4","%1x of %2 (%3). Total: %4"
+"without interest","without interest"
+"with interest","with interest"
+"with discount","with discount"
+"Callback received %1 -> %2","Callback received %1 -> %2"
+"Your payment for the order %1 was confirmed","Your payment for the order %1 was confirmed"
+"The order %1 was cancelled. Amount of %2","The order %1 was cancelled. Amount of %2"
+"The order had the amount refunded by PicPay. Amount of %1","The order had the amount refunded by PicPay. Amount of %1"
+"in cash payments","in cash payments"
+"%1 installments","%1 installments"
+"Per Installments","Per Installments"
+Amortization,Amortization
+Compound,Compound
+Simple,Simple
+Authorize,Authorize
+"Authorize and Capture","Authorize and Capture"
+"Street Line %1","Street Line %1"
+"Item with id ""%1"" does not exist.","Item with id ""%1"" does not exist."
+"Could not save the callback info: %1","Could not save the callback info: %1"
+"Could not save the request info: %1","Could not save the request info: %1"
+"Not Available","Not Available"
+ID,ID
+Status,Status
+Payload,Payload
+"Created At","Created At"
+"Chosen payment method","Chosen payment method"
+"Card Information","Card Information"
+"Insert your card number to see installments options","Insert your card number to see installments options"
+"Place Order","Place Order"
+"Name on Card","Name on Card"
+"Expiration Date","Expiration Date"
+"Card Verification Number","Card Verification Number"
+CVV,CVV
+"Customer Taxvat","Customer Taxvat"
+"Credit card number does not match credit card type.","Credit card number does not match credit card type."
+"Please enter a valid credit card type number.","Please enter a valid credit card type number."
+"PicPay Checkout","PicPay Checkout"
+"Credit Card","Credit Card"
+Enabled,Enabled
+Title,Title
+"Title of the payment method to be shown on checkout's page","Title of the payment method to be shown on checkout's page"
+Capture,Capture
+"Automatically Capture the transaction?","Automatically Capture the transaction?"
+"Credit Card Types","Credit Card Types"
+"New Order Status","New Order Status"
+"Paid Order Status","Paid Order Status"
+"Paid Virtual Order Status","Paid Virtual Order Status"
+"Min Installments","Min Installments"
+"Max Installments","Max Installments"
+"Max Installments Without Interest","Max Installments Without Interest"
+"Minimum Installment Amount","Minimum Installment Amount"
+"Has Interest","Has Interest"
+"Interest Type","Interest Type"
+"Interest rate","Interest rate"
+"Number format with dot (.) as decimal separator","Number format with dot (.) as decimal separator"
+"Interest Per Installments","Interest Per Installments"
+"It'll charge the interest based on installments saved below","It'll charge the interest based on installments saved below"
+"Interest orders with 1 installment","Interest orders with 1 installment"
+"Interest orders with 2 installments","Interest orders with 2 installments"
+"Interest orders with 3 installments","Interest orders with 3 installments"
+"Interest orders with 4 installments","Interest orders with 4 installments"
+"Interest orders with 5 installments","Interest orders with 5 installments"
+"Interest orders with 6 installments","Interest orders with 6 installments"
+"Interest orders with 7 installments","Interest orders with 7 installments"
+"Interest orders with 8 installments","Interest orders with 8 installments"
+"Interest orders with 9 installments","Interest orders with 9 installments"
+"Interest orders with 10 installments","Interest orders with 10 installments"
+"Interest orders with 11 installments","Interest orders with 11 installments"
+"Interest orders with 12 installments","Interest orders with 12 installments"
+"Sort Order","Sort Order"
+"Payment From Applicable Countries","Payment From Applicable Countries"
+"Payment From Specific Countries","Payment From Specific Countries"
+"Minimum Order Total.","Minimum Order Total."
+"Only orders with an amount higher than this will show this method","Only orders with an amount higher than this will show this method"
+"Maximum Order Total.","Maximum Order Total."
+"Only orders with an amount lower than this will show this method","Only orders with an amount lower than this will show this method"
+General,General
+"Credentials and General Settings","Credentials and General Settings"
+"Credentials used for all PicPay services, if you don't have the private key, contact us.","Credentials used for all PicPay services, if you don't have the private key, contact us."
+"API Key","API Key"
+"Insert here your APi Key for your account","Insert here your APi Key for your account"
+"API Secret","API Secret"
+"Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account","Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account"
+"Use Sandbox","Use Sandbox"
+"If enabled, the transaction will be done in PicPay's test environment","If enabled, the transaction will be done in PicPay's test environment"
+"Soft Descriptor","Soft Descriptor"
+"Soft descriptor let merchants provide customers with a short information about the business that processed a charge","Soft descriptor let merchants provide customers with a short information about the business that processed a charge"
+"Max 13 characters","Max 13 characters"
+"Show Payment Info at Success Page","Show Payment Info at Success Page"
+"If your store shows the payment info at success page, DON'T enable this feature","If your store shows the payment info at success page, DON'T enable this feature"
+"Enable Log Requests","Enable Log Requests"
+"Address Attributes","Address Attributes"
+"Address data that'll be sent to Credit Card","Address data that'll be sent to Credit Card"
+Street,Street
+Number,Number
+Complement,Complement
+"A complementary information about the address","A complementary information about the address"
+District,District
+Version,Version
+Method,Method
+"Increment ID","Increment ID"
+Created,Created
+"Status Code","Status Code"
+Request,Request
+Response,Response
+"Auth Token generated when creating the notification URL on PicPay","Auth Token generated when creating the notification URL on PicPay"

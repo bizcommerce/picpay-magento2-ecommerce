@@ -1,0 +1,33 @@
+<?php
+/**
+ * @var \PicPay\Checkout\Block\Adminhtml\Order\View\Tab\PicPay $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+
+<div id="order_picpay_checkout_callback_block">
+    <section  class="admin__page-section edit-order-picpay_checkout-callback-grid">
+        <table class="data-table admin__table-primary table-picpay_checkout-callback">
+            <thead>
+                <tr>
+                    <th><?= __('ID') ?></th>
+                    <th><?= __('Status') ?></th>
+                    <th><?= __('Payload') ?></th>
+                    <th><?= __('Created At') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            /** @var \PicPay\Checkout\Model\Callback $callback */
+            foreach($block->getCallbackCollection() as $callback): ?>
+                <tr>
+                    <td><?= $callback->getId() ?></td>
+                    <td><?= $callback->getStatus() ?></td>
+                    <td class="data-grid-cell-content"><?= $callback->getPayload() ?></td>
+                    <td><?= $block->formatDate($callback->getCreatedAt(), \IntlDateFormatter::MEDIUM) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+</div>

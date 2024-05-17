@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Checkout
+ *
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <picpay_checkout>
+            <general>
+                <refund_on_cancel>0</refund_on_cancel>
+                <show_payment_info>0</show_payment_info>
+                <info_url>https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhook</info_url>
+            </general>
+            <address>
+                <street>0</street>
+                <number>1</number>
+                <complement>2</complement>
+                <district>3</district>
+            </address>
+            <endpoints>
+                <payments_uri>https://checkout-api.picpay.com/</payments_uri>
+                <payments_uri_sandbox>https://checkout-api-sandbox.picpay.com/</payments_uri_sandbox>
+                <payments>
+                    <auth>oauth2/token</auth>
+                    <create>api/v1/charge/authorization</create>
+                    <capture>api/v1/charge/{order_id}/capture</capture>
+                    <get>api/v1/charge/{order_id}</get>
+                    <cancel>api/v1/charge/{order_id}/refund</cancel>
+                    <refund>api/v1/charge/{order_id}/refund</refund>
+                    <card>api/v1/cards/verification</card>
+                </payments>
+            </endpoints>
+        </picpay_checkout>
+        <payment>
+            <picpay_checkout_cc>
+                <active>0</active>
+                <model>PicPayPaymentCreditCardFacade</model>
+                <title>Cartão de Crédito</title>
+                <payment_action>order</payment_action>
+                <order_status>pending</order_status>
+                <paid_order_status>processing</paid_order_status>
+                <paid_virtual_order_status>complete</paid_virtual_order_status>
+                <has_interest>0</has_interest>
+                <specificcountry>BR</specificcountry>
+                <cctypes>MC,VI,ELO,AE,HC,HI</cctypes>
+                <interest_type>price</interest_type>
+                <interest_rate>1.99</interest_rate>
+                <interest_2_installments>4.5</interest_2_installments>
+                <interest_3_installments>5</interest_3_installments>
+                <interest_4_installments>5.5</interest_4_installments>
+                <interest_5_installments>6.5</interest_5_installments>
+                <interest_6_installments>7.5</interest_6_installments>
+                <interest_7_installments>8.5</interest_7_installments>
+                <interest_8_installments>9.5</interest_8_installments>
+                <interest_9_installments>10.5</interest_9_installments>
+                <interest_10_installments>11.5</interest_10_installments>
+                <interest_11_installments>12.5</interest_11_installments>
+                <interest_12_installments>14</interest_12_installments>
+                <min_installments>1</min_installments>
+                <max_installments>10</max_installments>
+                <max_installments_without_interest>10</max_installments_without_interest>
+                <minimum_installment_amount>5</minimum_installment_amount>
+                <!-- Method config -->
+                <is_gateway>1</is_gateway>
+                <can_use_checkout>1</can_use_checkout>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_order>1</can_order>
+                <can_capture_partial>0</can_capture_partial>
+                <can_use_internal>1</can_use_internal>
+                <can_refund_partial_per_invoice>0</can_refund_partial_per_invoice>
+                <can_cancel>1</can_cancel>
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_edit>0</can_edit>
+                <masked_fields>cvv,cc_number</masked_fields>
+                <useccv>1</useccv>
+                <paymentInfoKeys>merchantChargeId,status,tid,credit1-nsu,credit1-authorizationCode,captured,refunded</paymentInfoKeys>
+                <privateInfoKeys>merchantChargeId,status,tid,credit1-nsu,credit1-authorizationCode,captured,refunded</privateInfoKeys>
+                <debug>1</debug>
+                <debugReplaceKeys>cvv,cc_number</debugReplaceKeys>
+            </picpay_checkout_cc>
+        </payment>
+    </default>
+</config>
+
