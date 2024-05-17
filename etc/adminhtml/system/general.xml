@@ -48,9 +48,8 @@
                 <comment><![CDATA[If enabled, the transaction will be done in PicPay's test environment]]></comment>
             </field>
 
-            <field id="soft_descriptor" translate="label comment tooltip" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <field id="soft_descriptor" translate="label comment tooltip" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Soft Descriptior</label>
-                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 <config_path>picpay_checkout/general/soft_descriptor</config_path>
                 <tooltip>Max 13 characters</tooltip>
                 <comment><![CDATA[Soft descriptor let merchants provide customers with a short information about the business that processed a charge]]></comment>
