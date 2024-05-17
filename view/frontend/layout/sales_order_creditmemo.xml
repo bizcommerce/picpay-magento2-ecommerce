@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="PicPay_Checkout::css/checkout.css" />
+        <script src="PicPay_Checkout::js/payments.js" />
+    </head>
+    <body>
+        <referenceContainer name="creditmemo_totals">
+            <block class="PicPay\Checkout\Block\Sales\Order\Totals\Interest" name="picpay_interest">
+                <action method="setBeforeCondition">
+                    <argument name="condition" xsi:type="string">shipping</argument>
+                </action>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

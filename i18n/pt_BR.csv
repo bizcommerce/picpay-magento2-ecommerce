@@ -1,0 +1,123 @@
+"PicPay - Callbacks","PicPay - Callbacks"
+"Don't forget to configure the Webhook URL in your PicPay account.","Não se esqueça de configurar a URL do Webhook em sua conta PicPay."
+"Webhook URL: %1","URL do Webhook: %1"
+"More info <a href=""%1"" target=""_blank"">here</a>","Mais informações <a href=""%1"" target=""_blank"">aqui</a>"
+"Module Version: v%1","Versão do Módulo: v%1"
+"Credit Card Type","Bandeira do Cartão"
+"Credit Card Owner","Nome do Titular"
+"Card Number","Número do Cartão"
+Installments,Parcelas
+N/A,N/A
+"Interest Rate","Taxa de Juros"
+"Callback List","Lista de Callbacks"
+"Request List","Lista de Requisições"
+Content,Conteúdo
+Params,Parâmetros
+"Webhook %1","Webhook %1"
+"Error on get token","Erro ao obter token"
+"There was an error with your card data, verify and try again.","Houve um erro com os dados do seu cartão, verifique e tente novamente."
+"There was an error processing your request.","Houve um erro ao processar sua requisição."
+"Payment data object should be provided","O objeto de dados de pagamento deve ser fornecido"
+"%1x of %2 (%3). Total: %4","%1x de %2 (%3). Total: %4"
+"without interest","sem juros"
+"with interest","com juros"
+"with discount","com desconto"
+"Callback received %1 -> %2","Callback recebido %1 -> %2"
+"Your payment for the order %1 was confirmed","Seu pagamento para o pedido %1 foi confirmado"
+"The order %1 was cancelled. Amount of %2","O pedido %1 foi cancelado. Valor de %2"
+"The order had the amount refunded by PicPay. Amount of %1","O pedido teve o valor reembolsado pelo PicPay. Valor de %1"
+"in cash payments","em pagamentos à vista"
+"%1 installments","%1 parcelas"
+"Per Installments","Por Parcela"
+Amortization,Amortização
+Compound,Composto
+Simple,Simples
+Authorize,Autorizar
+"Authorize and Capture","Autorizar e Capturar"
+"Street Line %1","Linha de Endereço %1"
+"Item with id ""%1"" does not exist.","Item com id ""%1"" não existe."
+"Could not save the callback info: %1","Não foi possível salvar as informações do callback: %1"
+"Could not save the request info: %1","Não foi possível salvar as informações da requisição: %1"
+"Not Available","Indisponível"
+ID,ID
+Status,Status
+Payload,Payload
+"Chosen payment method","Método de pagamento escolhido"
+"Card Information","Informações do Cartão"
+"Insert your card number to see installments options","Insira o número do seu cartão para ver as opções de parcelamento"
+"Place Order","Finalizar Pedido"
+"Name on Card","Nome do Titular"
+"Expiration Date","Data de Validade"
+"Card Verification Number","Código de Segurança"
+CVV,CVV
+"Customer Taxvat","Doumento do Titular"
+"Credit card number does not match credit card type.","O número do cartão de crédito não corresponde ao tipo de cartão de crédito."
+"Please enter a valid credit card type number.","Por favor, insira um número de cartão de crédito válido."
+"PicPay Checkout","PicPay Checkout"
+"Credit Card","Cartão de Crédito"
+"Title of the payment method to be shown on checkout's page","Título do método de pagamento a ser exibido na página de checkout"
+Capture,Capturar
+"Automatically Capture the transaction?","Capturar a transação automaticamente?"
+"Credit Card Types","Bandeiras de Cartão de Crédito"
+"New Order Status","Status de Novos Pedido"
+"Paid Order Status","Status de Pedidos Pagos"
+"Paid Virtual Order Status","Status de Pedidos Virtuais Pagos"
+"Min Installments","Mínimo de Parcelas"
+"Max Installments","Máximo de Parcelas"
+"Max Installments Without Interest","Máximo de Parcelas Sem Juros"
+"Minimum Installment Amount","Valor da Parcela Mínima"
+"Has Interest","Possui Juros"
+"Interest Type","Tipo de Juros"
+"Interest rate","Taxa de Juros"
+"Number format with dot (.) as decimal separator","Formato numérico com ponto (.) como separador decimal"
+"Interest Per Installments","Juros por Parcela"
+"It'll charge the interest based on installments saved below","Será cobrado juros com base nas parcelas salvas abaixo"
+"Interest orders with 1 installment","Juros para pedidos em 1 parcela"
+"Interest orders with 2 installments","Juros para pedidos em 2 parcelas"
+"Interest orders with 3 installments","Juros para pedidos em 3 parcelas"
+"Interest orders with 4 installments","Juros para pedidos em 4 parcelas"
+"Interest orders with 5 installments","Juros para pedidos em 5 parcelas"
+"Interest orders with 6 installments","Juros para pedidos em 6 parcelas"
+"Interest orders with 7 installments","Juros para pedidos em 7 parcelas"
+"Interest orders with 8 installments","Juros para pedidos em 8 parcelas"
+"Interest orders with 9 installments","Juros para pedidos em 9 parcelas"
+"Interest orders with 10 installments","Juros para pedidos em 10 parcelas"
+"Interest orders with 11 installments","Juros para pedidos em 11 parcelas"
+"Interest orders with 12 installments","Juros para pedidos em 12 parcelas"
+"Sort Order","Ordenação"
+"Payment From Applicable Countries","Pagamento de Países Aplicáveis"
+"Payment From Specific Countries","Pagamento de Países Específicos"
+"Minimum Order Total.","Valor Mínimo do Pedido"
+"Only orders with an amount higher than this will show this method","Somente pedidos com um valor maior que este mostrarão este método"
+"Maximum Order Total.","Valor Máximo do Pedido"
+"Only orders with an amount lower than this will show this method","Somente pedidos com um valor menor que este mostrarão este método"
+General,Geral
+"Credentials and General Settings","Credenciais e Configurações Gerais"
+"Credentials used for all PicPay services, if you don't have the private key, contact us.","Credenciais usadas para todos os serviços do PicPay, se você não tiver a chave privada, entre em contato conosco."
+"API Key","Chave da API"
+"Insert here your APi Key for your account","Insira aqui sua Chave da API para sua
+"API Secret","Chave Secreta da API"
+"Insert here the token used for authenticate your transaction, that token can be found in your PicPay Account","Insira aqui o token usado para autenticar sua transação, esse token pode ser encontrado em sua conta PicPay"
+"Use Sandbox","Usar Ambiente de Testes"
+"If enabled, the transaction will be done in PicPay's test environment","Se habilitado, a transação será feita no ambiente de testes do PicPay"
+"Soft Descriptior","Soft Descriptior"
+"Soft descriptor let merchants provide customers with a short information about the business that processed a charge","O descritor suave permite que os comerciantes forneçam aos clientes informações breves sobre o negócio que processou uma cobrança"
+"Max 13 characters","Máximo de 13 caracteres"
+"Show Payment Info at Success Page","Mostrar Informações de Pagamento na Página de Sucesso"
+"If your store shows the payment info at success page, DON'T enable this feature","Se sua loja mostra as informações de pagamento na página de sucesso, NÃO habilite essa funcionalidade"
+"Enable Log Requests","Habilitar Log de Requisições"
+"Address Attributes","Atributos de Endereço"
+"Address data that'll be sent to Credit Card","Dados de endereço que serão enviados para o Cartão de Crédito"
+Street,Rua
+Number,Número
+Complement,Complemento
+"A complementary information about the address","Uma informação complementar sobre o endereço"
+District,Bairro
+Version,Versão
+Method,Método
+"Increment ID","ID do Pedido"
+"Created","Data de Criação"
+"Status Code","Código de Status"
+Request,Requisição
+Response,Resposta
+"Auth Token generated when creating the notification URL on PicPay","Token de Autenticação gerado ao criar a URL de notificação no PicPay"
