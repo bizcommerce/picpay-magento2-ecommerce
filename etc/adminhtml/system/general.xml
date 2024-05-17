@@ -37,7 +37,7 @@
             <field id="webhook_token" translate="label comment" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Webhook Token</label>
                 <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                <config_path>picpay_checkout/general/webhook_auth</config_path>
+                <config_path>picpay_checkout/general/webhook_token</config_path>
                 <comment>Auth Token generated when creating the notification URL on PicPay</comment>
             </field>
 
