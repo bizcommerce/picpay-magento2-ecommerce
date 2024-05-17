@@ -25,7 +25,7 @@
                                                     <item name="children" xsi:type="array">
                                                         <item name="renders" xsi:type="array">
                                                             <item name="children" xsi:type="array">
-                                                                <item name="picpay_payments" xsi:type="array">
+                                                                <item name="picpay_checkout" xsi:type="array">
                                                                     <item name="component" xsi:type="string">PicPay_Checkout/js/view/payment/picpay-checkout</item>
                                                                     <item name="methods" xsi:type="array">
                                                                         <item name="picpay_checkout_cc" xsi:type="array">
