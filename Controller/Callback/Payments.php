@@ -29,7 +29,7 @@ class Payments extends Callback
     {
         $bearerToken = $request->getHeader('Authorization');
         $bearerToken = str_replace('Bearer ', '', $bearerToken);
-        $tokenHash = sha1($this->helperData->getWebhookToken());
+        $tokenHash = $this->helperData->getWebhookToken();
         return ($bearerToken == $tokenHash);
     }
 
