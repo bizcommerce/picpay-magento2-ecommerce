@@ -47,12 +47,12 @@ class Payments extends Callback
         try {
             $content = $this->getContent($this->getRequest());
             $this->logParams($content);
+            $method = 'picpay-payments';
 
             if (isset($content['status'])) {
-                $method = 'picpay-payments';
                 $chargeId = $content['merchantChargeId'];
-                if (isset($content['status_id'])) {
-                    $picpayStatus = $content['status_id'];
+                if (isset($content['status'])) {
+                    $picpayStatus = $content['status'];
                     $order = $this->helperOrder->loadOrderByMerchantChargeId($chargeId);
                     if ($order->getId()) {
                         $orderIncrementId = $order->getIncrementId();
