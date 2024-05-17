@@ -26,7 +26,7 @@ Params,Parâmetros
 "Your payment for the order %1 was confirmed","Seu pagamento para o pedido %1 foi confirmado"
 "The order %1 was cancelled. Amount of %2","O pedido %1 foi cancelado. Valor de %2"
 "The order had the amount refunded by PicPay. Amount of %1","O pedido teve o valor reembolsado pelo PicPay. Valor de %1"
-"in cash payments","em pagamentos à vista"
+"in cash payments","pagamentos à vista"
 "%1 installments","%1 parcelas"
 "Per Installments","Por Parcela"
 Amortization,Amortização
