@@ -1,16 +1,5 @@
 <?php
 
-/**
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- *
- */
-
 namespace PicPay\Checkout\Gateway\Request\CreditCard;
 
 use Magento\Framework\Exception\LocalizedException;
@@ -23,13 +12,7 @@ use PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider;
 
 class TransactionRequest extends PaymentsRequest implements BuilderInterface
 {
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
+
     /**
      * Builds ENV request
      *
@@ -91,18 +74,15 @@ class TransactionRequest extends PaymentsRequest implements BuilderInterface
 
     protected function getPaymentMethodData(Order $order, array $transactionInfo): array
     {
+        $installments = (int) $order->getPayment()->getAdditionalInformation('cc_installments') ?: 1;
+
         $transactionInfo['paymentType'] = 'CREDIT';
         $transactionInfo['credit'] = $this->getCardData($order, $order->getPayment());
         $transactionInfo['credit']['cardholderName'] = $this->getCustomerName($order);
-        $transactionInfo['credit']['installmentNumber'] = $this->getInstallments($order);
-        $transactionInfo['credit']['installmentType'] = $this->getInstallments($order) > 1 ? 'MERCHANT' : 'NONE';
+        $transactionInfo['credit']['installmentNumber'] = $installments;
+        $transactionInfo['credit']['installmentType'] = $installments > 1 ? 'MERCHANT' : 'NONE';
         $transactionInfo['credit']['billingAddress'] = $this->getBillingAddress($order);
 
         return $transactionInfo;
-    }
-
-    protected function getInstallments($order): int
-    {
-        return (int) $order->getPayment()->getAdditionalInformation('cc_installments') ?: 1;
     }
 }

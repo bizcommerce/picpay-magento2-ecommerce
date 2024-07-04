@@ -1,19 +1,5 @@
 <?php
 
-/**
- * PicPay
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- * @copyright   Copyright (c) PicPay
- *
- */
-
 namespace PicPay\Checkout\Model\Ui\CreditCard;
 
 use PicPay\Checkout\Helper\Data;
@@ -37,24 +23,14 @@ class ConfigProvider extends CcGenericConfigProvider
     protected $icons = [];
 
     /**
-     * @var Session
-     */
-    protected $checkoutSession;
-
-    /**
      * @var CustomerSession $customerSession
      */
     protected $customerSession;
 
     /**
-     * @var Data
+     * @var Session
      */
-    protected $helper;
-
-    /**
-     * @var UrlInterface
-     */
-    private $urlBuilder;
+    protected $checkoutSession;
 
     /**
      * @var Source
@@ -62,29 +38,30 @@ class ConfigProvider extends CcGenericConfigProvider
     protected $assetSource;
 
     /**
-     * @param Session $checkoutSession
-     * @param CustomerSession $customerSession,
-     * @param Data $helper
-     * @param CcConfig $ccConfig
-     * @param UrlInterface $urlBuilder
-     * @param PaymentHelper $paymentHelper
-     * @param Source $assetSource
+     * @var UrlInterface
      */
+    private $urlBuilder;
+
+    /**
+     * @var Data
+     */
+    protected $helper;
+
     public function __construct(
-        Session $checkoutSession,
-        CustomerSession $customerSession,
-        Data $helper,
         CcConfig $ccConfig,
-        UrlInterface $urlBuilder,
         PaymentHelper $paymentHelper,
-        Source $assetSource
+        CustomerSession $customerSession,
+        Session $checkoutSession,
+        Source $assetSource,
+        UrlInterface $urlBuilder,
+        Data $helper
     ) {
         parent::__construct($ccConfig, $paymentHelper, [self::CODE]);
-        $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
-        $this->helper = $helper;
-        $this->urlBuilder = $urlBuilder;
+        $this->checkoutSession = $checkoutSession;
         $this->assetSource = $assetSource;
+        $this->urlBuilder = $urlBuilder;
+        $this->helper = $helper;
     }
 
     /**
@@ -108,7 +85,7 @@ class ConfigProvider extends CcGenericConfigProvider
                     'grand_total' => $this->checkoutSession->getQuote()->getGrandTotal(),
                     'customer_taxvat' => $customerTaxvat,
                     'sandbox' => (int) $this->helper->getGeneralConfig('use_sandbox'),
-                    'icons' => $this->getIcons(),
+                    'icons' => $this->getPaymentIcons(),
                     'availableTypes' => $this->getCcAvailableTypes($methodCode)
                 ],
                 'ccform' => [
@@ -127,35 +104,31 @@ class ConfigProvider extends CcGenericConfigProvider
         ];
     }
 
-
     /**
      * Get icons for available payment methods
      *
      * @return array
      */
-    public function getIcons()
+    public function getPaymentIcons(): array
     {
-        if (!empty($this->icons)) {
-            return $this->icons;
-        }
-
-        $types = $this->getCcAvailableTypes(self::CODE);
-        foreach ($types as $code => $label) {
-            if (!array_key_exists($code, $this->icons)) {
-                $asset = $this->ccConfig->createAsset('PicPay_Checkout::images/cc/' . strtolower($code) . '.png');
-                $placeholder = $this->assetSource->findSource($asset);
-                if ($placeholder) {
-                    list($width, $height) = getimagesize($asset->getSourceFile());
-                    $this->icons[$code] = [
-                        'url' => $asset->getUrl(),
-                        'width' => $width,
-                        'height' => $height,
-                        'title' => __($label),
-                    ];
+        if (empty($this->icons)) {
+            $types = $this->getCcAvailableTypes(self::CODE);
+            foreach ($types as $code => $label) {
+                if (!array_key_exists($code, $this->icons)) {
+                    $asset = $this->ccConfig->createAsset('PicPay_Checkout::images/cc/' . strtolower($code) . '.png');
+                    $placeholder = $this->assetSource->findSource($asset);
+                    if ($placeholder) {
+                        list($width, $height) = getimagesize($asset->getSourceFile());
+                        $this->icons[$code] = [
+                            'url' => $asset->getUrl(),
+                            'width' => $width,
+                            'height' => $height,
+                            'title' => __($label),
+                        ];
+                    }
                 }
             }
         }
-
         return $this->icons;
     }
 }

@@ -1,15 +1,5 @@
 <?php
 
-/**
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- */
-
 namespace PicPay\Checkout\Model;
 
 use PicPay\Checkout\Api\Data\CallbackExtensionInterface;
@@ -44,19 +34,21 @@ class Callback extends AbstractModel implements CallbackInterface
     }
 
     /**
-     * @ingeritdoc
+     * @inheritDoc
      */
-    public function getStatus()
+    public function getExtensionAttributes()
     {
-        return $this->getData(self::STATUS);
+        //@phpstan-ignore-next-line
+        return $this->_getExtensionAttributes();
     }
 
     /**
-     * @ingeritdoc
+     * @inheritDoc
      */
-    public function setStatus($status)
+    public function setExtensionAttributes(CallbackExtensionInterface $extensionAttributes)
     {
-        $this->setData(self::STATUS, $status);
+        //@phpstan-ignore-next-line
+        $this->_setExtensionAttributes($extensionAttributes);
     }
 
     /**
@@ -78,17 +70,17 @@ class Callback extends AbstractModel implements CallbackInterface
     /**
      * @ingeritdoc
      */
-    public function getIncrementId()
+    public function getStatus()
     {
-        return $this->getData(self::INCREMENT_ID);
+        return $this->getData(self::STATUS);
     }
 
     /**
      * @ingeritdoc
      */
-    public function setIncrementId($incrementId)
+    public function setStatus($status)
     {
-        $this->setData(self::INCREMENT_ID, $incrementId);
+        $this->setData(self::STATUS, $status);
     }
 
     /**
@@ -105,6 +97,22 @@ class Callback extends AbstractModel implements CallbackInterface
     public function setPayload($payload)
     {
         $this->setData(self::PAYLOAD, $payload);
+    }
+
+    /**
+     * @ingeritdoc
+     */
+    public function getIncrementId()
+    {
+        return $this->getData(self::INCREMENT_ID);
+    }
+
+    /**
+     * @ingeritdoc
+     */
+    public function setIncrementId($incrementId)
+    {
+        $this->setData(self::INCREMENT_ID, $incrementId);
     }
 
     /**
@@ -137,23 +145,5 @@ class Callback extends AbstractModel implements CallbackInterface
     public function setUpdatedAt($updatedAt)
     {
         $this->setData(self::UPDATED_AT, $updatedAt);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getExtensionAttributes()
-    {
-        //@phpstan-ignore-next-line
-        return $this->_getExtensionAttributes();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setExtensionAttributes(CallbackExtensionInterface $extensionAttributes)
-    {
-        //@phpstan-ignore-next-line
-        $this->_setExtensionAttributes($extensionAttributes);
     }
 }

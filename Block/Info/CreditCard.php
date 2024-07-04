@@ -31,13 +31,6 @@ class CreditCard extends AbstractInfo
      */
     protected $priceCurrency;
 
-    /**
-     * CreditCard constructor.
-     * @param Context $context
-     * @param ConfigInterface $config
-     * @param Config $paymentConfig
-     * @param array $data
-     */
     public function __construct(
         Context $context,
         ConfigInterface $config,
@@ -45,7 +38,7 @@ class CreditCard extends AbstractInfo
         PriceCurrencyInterface $priceCurrency,
         array $data = []
     ) {
-        parent::__construct($context, $config, $paymentConfig, $data);
+        parent::__construct($context, $paymentConfig, $config, $data);
         $this->priceCurrency = $priceCurrency;
     }
 
@@ -56,17 +49,17 @@ class CreditCard extends AbstractInfo
      */
     protected function _prepareSpecificInformation($transport = null)
     {
-        $installments = $this->getInfo()->getAdditionalInformation('installments');
+        $installments = $this->getInfo()->getAdditionalInformation('installments') ?: 1;
 
         /** @var \Magento\Sales\Model\Order $order */
         $order = $this->getInfo()->getOrder();
         $installmentValue = $order->getGrandTotal() / $installments;
 
         $body = [
-            (string)__('Credit Card Type') => $this->getCcTypeName(),
-            (string)__('Credit Card Owner') => $this->getInfo()->getCcOwner(),
-            (string)__('Card Number') => sprintf('xxxx-%s', $this->getInfo()->getCcLast4()),
-            (string)__('Installments') => sprintf('%s x of %s', $installments, $this->priceCurrency->format($installmentValue, false))
+            (string) __('Credit Card Type') => $this->getCcTypeName(),
+            (string) __('Credit Card Owner') => $this->getInfo()->getCcOwner(),
+            (string) __('Card Number') => sprintf('xxxx-%s', $this->getInfo()->getCcLast4()),
+            (string) __('Installments') => $this->getInstallmentsText($installments, $installmentValue)
         ];
 
         $transport = new DataObject($body);
@@ -74,20 +67,20 @@ class CreditCard extends AbstractInfo
         return parent::_prepareSpecificInformation($transport);
     }
 
+    protected function getInstallmentsText($installments, $value): string
+    {
+        return sprintf('%s x of %s', $installments, $this->priceCurrency->format($value, false));
+    }
+
     /**
-     * Retrieve credit card type name
-     *
      * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getCcTypeName()
+    public function getCcTypeName(): string
     {
-        $types = $this->paymentConfig->getCcTypes();
         $ccType = $this->getInfo()->getCcType();
-        if (isset($types[$ccType])) {
-            return $types[$ccType];
-        }
-        return empty($ccType) ? __('N/A') : __(ucwords($ccType));
+        return $this->paymentConfig->getCcTypes()[$ccType] ?? __(ucwords($ccType ?: 'N/A'));
+
     }
 
 }

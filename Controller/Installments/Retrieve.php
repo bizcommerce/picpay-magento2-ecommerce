@@ -1,13 +1,5 @@
 <?php
 
-/**
- *
- *
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- */
-
 namespace PicPay\Checkout\Controller\Installments;
 
 use PicPay\Checkout\Helper\Data as HelperData;
@@ -28,37 +20,37 @@ use Magento\Framework\Session\SessionManagerInterface;
 
 class Retrieve extends Action implements HttpPostActionInterface, CsrfAwareActionInterface
 {
-    /** @var HelperData */
-    protected $helperData;
+    /** @var JsonFactory */
+    protected $resultJsonFactory;
 
     /** @var Json */
     protected $json;
 
-    /** @var JsonFactory */
-    protected $resultJsonFactory;
-
     /** @var Session */
     protected $checkoutSession;
-
-    /** @var Installments */
-    private $helperInstallments;
 
     /** @var SessionManagerInterface */
     protected $session;
 
+    /** @var HelperData */
+    protected $helperData;
+
+    /** @var Installments */
+    private $helperInstallments;
+
     public function __construct(
         Context $context,
-        Json $json,
         Session $checkoutSession,
         SessionManagerInterface $session,
         JsonFactory $resultJsonFactory,
-        Installments $helperInstallments,
-        HelperData $helperData
+        Json $json,
+        HelperData $helperData,
+        Installments $helperInstallments
     ) {
-        $this->json = $json;
         $this->checkoutSession = $checkoutSession;
         $this->session = $session;
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->json = $json;
         $this->helperData = $helperData;
         $this->helperInstallments = $helperInstallments;
 
@@ -67,21 +59,21 @@ class Retrieve extends Action implements HttpPostActionInterface, CsrfAwareActio
 
     public function execute()
     {
-        //Salvar todas as formas de pagamento disponíveis
+        $responseCode = 401;
         $result = $this->resultJsonFactory->create();
-        $result->setHttpResponseCode(401);
 
-        try{
+        try {
             $content = $this->getRequest()->getContent();
             $bodyParams = ($content) ? $this->json->unserialize($content) : [];
             $ccType = $bodyParams['cc_type'] ?? '';
 
             $result->setJsonData($this->json->serialize($this->getInstallments($ccType)));
-            $result->setHttpResponseCode(200);
+            $responseCode = 200;
         } catch (\Exception $e) {
-            $result->setHttpResponseCode(500);
+            $responseCode = 500;
         }
 
+        $result->setHttpResponseCode($responseCode);
         return $result;
     }
 
@@ -92,8 +84,7 @@ class Retrieve extends Action implements HttpPostActionInterface, CsrfAwareActio
     public function getInstallments(string $ccType): array
     {
         $this->session->setPicPayCcType($ccType);
-        $grandTotal = $this->checkoutSession->getQuote()->getGrandTotal();
-        return $this->helperInstallments->getAllInstallments($grandTotal);
+        return $this->helperInstallments->getAllInstallments($this->checkoutSession->getQuote()->getGrandTotal());
     }
 
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException

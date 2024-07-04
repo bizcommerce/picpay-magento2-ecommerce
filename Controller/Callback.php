@@ -1,11 +1,4 @@
 <?php
-/**
- *
- *
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- */
 
 namespace PicPay\Checkout\Controller;
 
@@ -41,19 +34,14 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
     protected $helperOrder;
 
     /**
-     * @var CallbackResourceModel
-     */
-    protected $callbackResourceModel;
-
-    /**
      * @var CallbackFactory
      */
     protected $callbackFactory;
 
     /**
-     * @var Json
+     * @var CallbackResourceModel
      */
-    protected $json;
+    protected $callbackResourceModel;
 
     /**
      * @var string
@@ -73,32 +61,27 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
     protected $eventManager;
 
     /**
-     * PostBack constructor.
-     * @param Context $context
-     * @param Json $json
-     * @param ResultFactory $resultFactory
-     * @param HelperData $helperData
-     * @param HelperOrder $helperOrder
-     * @param CallbackResourceModel $callbackResourceModel
-     * @param ManagerInterface $eventManager
+     * @var Json
      */
+    protected $json;
+
     public function __construct(
         Context $context,
-        Json $json,
         ResultFactory $resultFactory,
         HelperData $helperData,
         HelperOrder $helperOrder,
-        CallbackResourceModel $callbackResourceModel,
         CallbackFactory $callbackFactory,
-        ManagerInterface $eventManager
+        CallbackResourceModel $callbackResourceModel,
+        ManagerInterface $eventManager,
+        Json $json
     ) {
-        $this->json = $json;
         $this->resultFactory = $resultFactory;
         $this->helperData = $helperData;
         $this->helperOrder = $helperOrder;
-        $this->callbackResourceModel = $callbackResourceModel;
         $this->callbackFactory = $callbackFactory;
+        $this->callbackResourceModel = $callbackResourceModel;
         $this->eventManager = $eventManager;
+        $this->json = $json;
 
         parent::__construct($context);
     }
@@ -147,7 +130,7 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         $hash = $request->getParam('hash');
-        $storeHash = sha1($this->helperData->getGeneralConfig('app_key'));
+        $storeHash = sha1($this->helperData->getGeneralConfig('api_key'));
         return ($hash == $storeHash);
     }
 
@@ -174,7 +157,7 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
      */
     protected function logParams(array $content): void
     {
-        $this->helperData->log(__('Content'), self::LOG_NAME);
+        $this->helperData->log(__('Content Data'), self::LOG_NAME);
         $this->helperData->log($content, self::LOG_NAME);
     }
 }

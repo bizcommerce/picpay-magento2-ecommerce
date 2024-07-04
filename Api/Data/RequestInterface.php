@@ -60,6 +60,31 @@ interface RequestInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     public function setIncrementId($incrementId);
 
     /**
+     * Get Request.
+     *
+     * @return string
+     */
+    public function getRequest();
+
+    /**
+     * Set Request.
+     * @param $request
+     */
+    public function setRequest($request);
+    /**
+     * Get Response.
+     *
+     * @return string
+     */
+    public function getResponse();
+
+    /**
+     * Set Response.
+     * @param $response
+     */
+    public function setResponse($response);
+
+    /**
      * Get Status.
      *
      * @return string
@@ -85,31 +110,6 @@ interface RequestInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      */
     public function setMethod($method);
 
-    /**
-     * Get Request.
-     *
-     * @return string
-     */
-    public function getRequest();
-
-    /**
-     * Set Request.
-     * @param $request
-     */
-    public function setRequest($request);
-
-    /**
-     * Get Response.
-     *
-     * @return string
-     */
-    public function getResponse();
-
-    /**
-     * Set Response.
-     * @param $response
-     */
-    public function setResponse($response);
 
     /**
      * Get CreatedAt.
