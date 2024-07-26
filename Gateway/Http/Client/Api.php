@@ -18,6 +18,7 @@ namespace PicPay\Checkout\Gateway\Http\Client;
 use PicPay\Checkout\Gateway\Http\Client;
 use PicPay\Checkout\Gateway\Http\Client\Api\Card;
 use PicPay\Checkout\Gateway\Http\Client\Api\Create;
+use PicPay\Checkout\Gateway\Http\Client\Api\CreatePix;
 use PicPay\Checkout\Gateway\Http\Client\Api\Query;
 use PicPay\Checkout\Gateway\Http\Client\Api\Refund;
 use PicPay\Checkout\Gateway\Http\Client\Api\Capture;
@@ -36,6 +37,11 @@ class Api
      * @var Create
      */
     private $create;
+
+    /**
+     * @var CreatePix
+     */
+    private $createPix;
 
     /**
      * @var Refund
@@ -71,6 +77,7 @@ class Api
         Data $helper,
         Token $token,
         Create $create,
+        CreatePix $createPix,
         Refund $refund,
         Capture $capture,
         Card $card,
@@ -78,7 +85,7 @@ class Api
     ) {
         $this->helper = $helper;
         $this->token = $token;
-        $this->create = $create;
+        $this->createPix = $createPix;
         $this->refund = $refund;
         $this->capture = $capture;
         $this->card = $card;
@@ -120,6 +127,14 @@ class Api
     public function create(): ClientInterface
     {
         return $this->getClient($this->create);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function createPix(): ClientInterface
+    {
+        return $this->getClient($this->createPix);
     }
 
     /**

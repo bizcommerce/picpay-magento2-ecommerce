@@ -209,7 +209,7 @@ class PaymentsRequest
         if ($picpayCustomerTaxVat) {
             $customerTaxVat = $picpayCustomerTaxVat;
         }
-        return $customerTaxVat;
+        return $this->helper->digits($customerTaxVat);
     }
 
     /**

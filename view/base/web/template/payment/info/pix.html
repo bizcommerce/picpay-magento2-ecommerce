@@ -1,0 +1,23 @@
+<div class="pix-barcode-container">
+    <div class="pix-img-code" style="width: 200px;">
+        <!-- ko if: qr_code_base64 && qr_code_base64 !== 'NA' -->
+        <img data-bind="attr: { alt: 'QRCode', src: 'data:image/png;base64, ' + qr_code_base64 }"
+             class="picpay-pix-qrcode" />
+        <!-- /ko -->
+    </div>
+    <div class="pix-qrcode-time">
+        <span><!-- ko i18n: 'QRCode valid for: '--><!-- /ko --></span>
+        <strong><span data-bind="text: formattedTime"></span></strong>
+    </div>
+    <button class="pix-copy-button" data-bind="click: copyPastePixCode, text: buttonText">
+    </button>
+</div>
+
+<div class="pix-container" data-bind="visible: orderCanceled">
+    <h2><!-- ko i18n: 'Payment not identified. This order has been canceled or the QrCode has expired.'--><!-- /ko --></h2>
+</div>
+
+<div class="pix-container" data-bind="visible: paymentReceived">
+    <h2><!-- ko i18n: 'Payment received with success!'--><!-- /ko --></h2>
+</div>
+

@@ -189,6 +189,7 @@ class Order extends \Magento\Payment\Helper\Data
      * @param string $picpayStatus
      * @param array $content
      * @param float $amount
+     * @param string $method
      * @param bool $callback
      * @return bool
      */
@@ -197,6 +198,7 @@ class Order extends \Magento\Payment\Helper\Data
         string $picpayStatus,
         array $content,
         float $amount,
+        string $method,
         bool $callback = false
     ): bool {
         try {
@@ -213,8 +215,8 @@ class Order extends \Magento\Payment\Helper\Data
                         }
 
                         $updateStatus = $order->getIsVirtual()
-                            ? $this->helperData->getConfig('paid_virtual_order_status')
-                            : $this->helperData->getConfig('paid_order_status');
+                            ? $this->helperData->getConfig('paid_virtual_order_status', $method)
+                            : $this->helperData->getConfig('paid_order_status', $method);
 
                         $message = __('Your payment for the order %1 was confirmed', $order->getIncrementId());
                         $order->addCommentToStatusHistory($message, $updateStatus, true);
@@ -295,9 +297,13 @@ class Order extends \Magento\Payment\Helper\Data
     }
 
     /**
-     * @param $order
+     * @param SalesOrder $order
+     * @param $captureCase
      * @return void
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function captureOrder(SalesOrder $order, $captureCase = 'online'): void
     {
@@ -394,6 +400,22 @@ class Order extends \Magento\Payment\Helper\Data
                 if (isset($transaction['credit'])) {
                     $prefix = 'credit' . (string) ($i + 1) . '-';
                     $this->setTransactionInformation($payment, $transaction['credit'], $prefix);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->_logger->warning($e->getMessage());
+        }
+
+        return $payment;
+    }
+
+    public function updatePixAdditionalInfo(Payment $payment, array $transactions): Payment
+    {
+        try {
+            foreach ($transactions as $i => $transaction) {
+                if (isset($transaction['pix'])) {
+                    $prefix = 'pix' . (string) ($i + 1) . '-';
+                    $this->setTransactionInformation($payment, $transaction['pix'], $prefix);
                 }
             }
         } catch (\Exception $e) {

@@ -469,4 +469,44 @@ class Data extends \Magento\Payment\Helper\Data
         $softDescriptor = $this->getGeneralConfig('soft_descriptor') ?: $this->getStoreName();
         return substr($softDescriptor, 0, 13);
     }
+
+    public function getConvertedDate($date, int $additionalSeconds = 0, bool $setTimeZone = true): string
+    {
+        $date = new \DateTime($date, new \DateTimeZone('UTC'));
+
+        if ($setTimeZone) {
+            $timezone = new \DateTimeZone('America/Sao_Paulo');
+            $date->setTimezone($timezone);
+        }
+
+        $interval = new \DateInterval("PT{$additionalSeconds}S");
+        $date->add($interval);
+
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * @param $startDate
+     * @param $endDate
+     * @return float|int
+     * @throws \Exception
+     */
+    public function getDiffBetweenDates($startDate, $endDate)
+    {
+        $start = new \DateTime($startDate, new \DateTimeZone('UTC'));
+
+        if ($start->format('Y-m-d H:i:s') > $endDate) {
+            return 0;
+        }
+
+        $end = new \DateTime($endDate, new \DateTimeZone('UTC'));
+
+        $interval = $start->diff($end);
+        $seconds = ($interval->days * 24 * 60 * 60) +
+            ($interval->h * 60 * 60) +
+            ($interval->i * 60) +
+            $interval->s;
+
+        return $seconds;
+    }
 }

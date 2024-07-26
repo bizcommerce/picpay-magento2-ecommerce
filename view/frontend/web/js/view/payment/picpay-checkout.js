@@ -7,10 +7,16 @@ define([
 ) {
     'use strict';
 
-    rendererList.push({
-        type: 'picpay_checkout_cc',
-        component: 'PicPay_Checkout/js/view/payment/method-renderer/cc'
-    });
+    rendererList.push(
+        {
+            type: 'picpay_checkout_cc',
+            component: 'PicPay_Checkout/js/view/payment/method-renderer/cc'
+        },
+        {
+            type: 'picpay_checkout_pix',
+            component: 'PicPay_Checkout/js/view/payment/method-renderer/pix'
+        }
+    );
 
     return Component.extend({});
 });
