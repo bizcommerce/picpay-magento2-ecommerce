@@ -125,7 +125,7 @@ class PaymentsRequest
     protected function getTransactionInfo(Order $order, float $orderAmount): array
     {
         $transactionInfo = [
-            'amount' => $orderAmount,
+            'amount' => $orderAmount * 100,
             'softDescriptor' => $this->helper->getSoftDescriptor(),
             'transactionId' => $order->getIncrementId()
         ];
