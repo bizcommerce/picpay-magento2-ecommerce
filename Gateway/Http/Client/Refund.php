@@ -44,7 +44,7 @@ class Refund implements ClientInterface
         $this->api->logRequest($requestBody, self::LOG_NAME);
         $transaction = $this->api->refund()->execute(
             $requestBody,
-            $config['store_id']
+            $config['order_id']
         );
         $this->api->logResponse($transaction, self::LOG_NAME);
         $this->api->saveRequest(
