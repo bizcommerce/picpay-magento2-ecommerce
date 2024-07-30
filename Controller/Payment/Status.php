@@ -68,7 +68,8 @@ class Status extends Action implements HttpGetActionInterface, CsrfAwareActionIn
             ];
 
             //echo "data: " . json_encode($result) . "\n\n";
-            $this->getResponse()->setBody(json_encode($result));
+            $this->getResponse()->setBody( "data: " . json_encode($result) . "\n\n");
+            $this->getResponse()->sendResponse();
             flush();
 
         }
