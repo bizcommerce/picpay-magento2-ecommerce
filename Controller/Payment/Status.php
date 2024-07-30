@@ -67,7 +67,8 @@ class Status extends Action implements HttpGetActionInterface, CsrfAwareActionIn
                 'redirect' => $this->_url->getUrl('sales/order/view/', ['order_id' => $lastOrder->getId()])
             ];
 
-            echo "data: " . json_encode($result) . "\n\n";
+            //echo "data: " . json_encode($result) . "\n\n";
+            $this->getResponse()->setBody(json_encode($result));
             flush();
 
         }
