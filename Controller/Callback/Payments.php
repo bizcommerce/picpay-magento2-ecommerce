@@ -49,6 +49,8 @@ class Payments extends Callback
             $this->logParams($content);
             $method = 'picpay-payments';
 
+            $content = isset($content['type']) ? $content['data'] : $content;
+
             if (isset($content['status'])) {
                 $chargeId = $content['merchantChargeId'];
                 if (isset($content['status'])) {
@@ -58,7 +60,7 @@ class Payments extends Callback
                         $orderIncrementId = $order->getIncrementId();
                         $method = $order->getPayment()->getMethod();
                         $amount = $content['amount'] ?? $order->getGrandTotal();
-                        $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, true);
+                        $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true);
                         $statusCode = 200;
                     }
                 }

@@ -33,6 +33,7 @@
                 <payments>
                     <auth>oauth2/token</auth>
                     <create>api/v1/charge/authorization</create>
+                    <create_pix>api/v1/charge/pix</create_pix>
                     <capture>api/v1/charge/{order_id}/capture</capture>
                     <get>api/v1/charge/{order_id}</get>
                     <cancel>api/v1/charge/{order_id}/refund</cancel>
@@ -90,6 +91,33 @@
                 <debug>1</debug>
                 <debugReplaceKeys>cvv,cc_number</debugReplaceKeys>
             </picpay_checkout_cc>
+
+            <picpay_checkout_pix>
+                <active>0</active>
+                <model>PicPayPaymentPixFacade</model>
+                <title>Pix</title>
+                <payment_action>order</payment_action>
+                <order_status>pending</order_status>
+                <paid_order_status>processing</paid_order_status>
+                <paid_virtual_order_status>complete</paid_virtual_order_status>
+                <specificcountry>BR</specificcountry>
+                 <!-- Method config -->
+                <is_gateway>1</is_gateway>
+                <can_use_checkout>1</can_use_checkout>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_order>1</can_order>
+                <can_capture_partial>0</can_capture_partial>
+                <can_use_internal>1</can_use_internal>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_cancel>1</can_cancel>
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_edit>0</can_edit>
+                <paymentInfoKeys>merchantChargeId,status,tid,refunded</paymentInfoKeys>
+                <privateInfoKeys>merchantChargeId,status,tid,refunded</privateInfoKeys>
+                <debug>1</debug>
+            </picpay_checkout_pix>
         </payment>
     </default>
 </config>

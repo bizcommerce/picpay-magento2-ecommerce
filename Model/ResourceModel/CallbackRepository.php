@@ -34,15 +34,14 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class CallbackRepository implements CallbackRepositoryInterface
 {
-
-    /** @var ResourceCallback  */
-    protected $resource;
-
     /** @var CallbackFactory  */
     protected $callbackFactory;
 
     /** @var CallbackCollectionFactory  */
     protected $callbackCollectionFactory;
+
+    /** @var ResourceCallback  */
+    protected $resource;
 
     /** @var CallbackSearchResultsInterfaceFactory  */
     protected $searchResultsFactory;
@@ -56,27 +55,18 @@ class CallbackRepository implements CallbackRepositoryInterface
     /** @var CollectionProcessorInterface  */
     private $collectionProcessor;
 
-    /**
-     * @param ResourceCallback $resource
-     * @param CallbackFactory $callbackFactory
-     * @param CallbackInterfaceFactory $dataCallbackFactory
-     * @param CallbackCollectionFactory $callbackCollectionFactory
-     * @param CallbackSearchResultsInterfaceFactory $searchResultsFactory
-     * @param CollectionProcessorInterface $collectionProcessor
-     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
-     */
     public function __construct(
-        ResourceCallback $resource,
         CallbackFactory $callbackFactory,
         CallbackInterfaceFactory $dataCallbackFactory,
+        ResourceCallback $resource,
         CallbackCollectionFactory $callbackCollectionFactory,
         CallbackSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
-        $this->resource = $resource;
         $this->callbackFactory = $callbackFactory;
         $this->callbackCollectionFactory = $callbackCollectionFactory;
+        $this->resource = $resource;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->dataCallbackFactory = $dataCallbackFactory;
         $this->collectionProcessor = $collectionProcessor;
@@ -86,14 +76,29 @@ class CallbackRepository implements CallbackRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function get($id) {
-        /** @var \PicPay\Checkout\Model\Callback $callback */
-        $callback = $this->callbackFactory->create();
-        $this->resource->load($callback, $id);
-        if (!$callback->getId()) {
-            throw new NoSuchEntityException(__('Item with id "%1" does not exist.', $id));
+    public function getList(
+        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+    ) {
+        $collection = $this->callbackCollectionFactory->create();
+
+        $this->extensionAttributesJoinProcessor->process(
+            $collection,
+            \PicPay\Checkout\Api\Data\CallbackInterface::class
+        );
+
+        $this->collectionProcessor->process($searchCriteria, $collection);
+
+        $searchResults = $this->searchResultsFactory->create();
+        $searchResults->setSearchCriteria($searchCriteria);
+
+        $items = [];
+        foreach ($collection as $model) {
+            $items[] = $model;
         }
-        return $callback;
+
+        $searchResults->setItems($items);
+        $searchResults->setTotalCount($collection->getSize());
+        return $searchResults;
     }
 
     /**
@@ -116,28 +121,13 @@ class CallbackRepository implements CallbackRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $criteria
-    ) {
-        $collection = $this->callbackCollectionFactory->create();
-
-        $this->extensionAttributesJoinProcessor->process(
-            $collection,
-            \PicPay\Checkout\Api\Data\CallbackInterface::class
-        );
-
-        $this->collectionProcessor->process($criteria, $collection);
-
-        $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($criteria);
-
-        $items = [];
-        foreach ($collection as $model) {
-            $items[] = $model;
+    public function get($id) {
+        /** @var \PicPay\Checkout\Model\Callback $callback */
+        $callback = $this->callbackFactory->create();
+        $this->resource->load($callback, $id);
+        if (!$callback->getId()) {
+            throw new NoSuchEntityException(__('Item with id "%1" does not exist.', $id));
         }
-
-        $searchResults->setItems($items);
-        $searchResults->setTotalCount($collection->getSize());
-        return $searchResults;
+        return $callback;
     }
 }

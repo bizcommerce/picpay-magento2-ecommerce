@@ -1,23 +1,5 @@
 <?php
 
-/**
- *
- *
- *
- *
- *
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- *
- *
- */
-
 namespace PicPay\Checkout\Model;
 
 use PicPay\Checkout\Api\Data\RequestExtensionInterface;
@@ -26,6 +8,24 @@ use Magento\Framework\Model\AbstractModel;
 
 class Request extends AbstractModel implements RequestInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function getExtensionAttributes()
+    {
+        //@phpstan-ignore-next-line
+        return $this->_getExtensionAttributes();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setExtensionAttributes(RequestExtensionInterface $extensionAttributes)
+    {
+        //@phpstan-ignore-next-line
+        $this->_setExtensionAttributes($extensionAttributes);
+    }
+
     /**
      * CMS page cache tag.
      */
@@ -50,6 +50,24 @@ class Request extends AbstractModel implements RequestInterface
     {
         $this->_init(ResourceModel\Request::class);
     }
+
+
+    /**
+     * @ingeritdoc
+     */
+    public function getIncrementId()
+    {
+        return $this->getData(self::INCREMENT_ID);
+    }
+
+    /**
+     * @ingeritdoc
+     */
+    public function setIncrementId($incrementId)
+    {
+        $this->setData(self::INCREMENT_ID, $incrementId);
+    }
+
 
     /**
      * @ingeritdoc
@@ -86,19 +104,18 @@ class Request extends AbstractModel implements RequestInterface
     /**
      * @ingeritdoc
      */
-    public function getIncrementId()
+    public function getResponse()
     {
-        return $this->getData(self::INCREMENT_ID);
+        return $this->getData(self::RESPONSE);
     }
 
     /**
      * @ingeritdoc
      */
-    public function setIncrementId($incrementId)
+    public function setResponse($response)
     {
-        $this->setData(self::INCREMENT_ID, $incrementId);
+        $this->setData(self::RESPONSE, $response);
     }
-
     /**
      * @ingeritdoc
      */
@@ -113,22 +130,6 @@ class Request extends AbstractModel implements RequestInterface
     public function setRequest($request)
     {
         $this->setData(self::REQUEST, $request);
-    }
-
-    /**
-     * @ingeritdoc
-     */
-    public function getResponse()
-    {
-        return $this->getData(self::RESPONSE);
-    }
-
-    /**
-     * @ingeritdoc
-     */
-    public function setResponse($response)
-    {
-        $this->setData(self::RESPONSE, $response);
     }
 
     /**
@@ -161,23 +162,5 @@ class Request extends AbstractModel implements RequestInterface
     public function setUpdatedAt($updatedAt)
     {
         $this->setData(self::UPDATED_AT, $updatedAt);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getExtensionAttributes()
-    {
-        //@phpstan-ignore-next-line
-        return $this->_getExtensionAttributes();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setExtensionAttributes(RequestExtensionInterface $extensionAttributes)
-    {
-        //@phpstan-ignore-next-line
-        $this->_setExtensionAttributes($extensionAttributes);
     }
 }

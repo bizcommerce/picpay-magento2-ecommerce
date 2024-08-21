@@ -121,3 +121,10 @@ Method,Método
 Request,Requisição
 Response,Resposta
 "Auth Token generated when creating the notification URL on PicPay","Token de Autenticação gerado ao criar a URL de notificação no PicPay"
+"Seconds to expire the transaction, the value must be equal or greater than 600 seconds.", "Segundos para a transação expirar, o valor deve ser igual ou maior que 600 segundos."
+"Expiration Time","Minutos para expiração"
+"Checkout Instructions","Instruções do Checkout"
+"Instructions to be shown in checkout's page, it can be HTML","Instruções para ser mostrada na página do checkout, pode ser HTML"
+"Payment not identified. This order has been canceled or the QrCode has expired.","Pagamnto não identificado. O pedido foi cancelado ou o QrCode expirou."
+"Payment received with success!", "Pagamento recebido com sucesso!"
+"QRCode valid for: ","QrCode válido por: "

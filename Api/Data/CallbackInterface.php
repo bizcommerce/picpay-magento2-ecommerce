@@ -1,21 +1,4 @@
 <?php
-/**
- *
- *
- *
- *
- *
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- *
- *
- */
 
 namespace PicPay\Checkout\Api\Data;
 
@@ -33,6 +16,17 @@ interface CallbackInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
     const UPDATED_AT = 'updated_at';
 
     /**
+     * @return \PicPay\Checkout\Api\Data\CallbackExtensionInterface|null
+     */
+    public function getExtensionAttributes();
+
+    /**
+     * @param \PicPay\Checkout\Api\Data\CallbackExtensionInterface $extensionAttributes
+     * @return void
+     */
+    public function setExtensionAttributes(CallbackExtensionInterface $extensionAttributes);
+
+    /**
      * Get EntityId.
      *
      * @return int
@@ -44,19 +38,6 @@ interface CallbackInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @param $entityId
      */
     public function setEntityId($entityId);
-
-    /**
-     * Get IncrementID.
-     *
-     * @return string
-     */
-    public function getIncrementId();
-
-    /**
-     * Set IncrementId.
-     * @param $orderId
-     */
-    public function setIncrementId($incrementId);
 
     /**
      * Get Status.
@@ -72,17 +53,17 @@ interface CallbackInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
     public function setStatus($status);
 
     /**
-     * Get Method.
+     * Get IncrementID.
      *
      * @return string
      */
-    public function getMethod();
+    public function getIncrementId();
 
     /**
-     * Set Method.
-     * @param $method
+     * Set IncrementId.
+     * @param $orderId
      */
-    public function setMethod($method);
+    public function setIncrementId($incrementId);
 
     /**
      * Get Payload.
@@ -96,6 +77,19 @@ interface CallbackInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @param $payload
      */
     public function setPayload($payload);
+
+    /**
+     * Get Method.
+     *
+     * @return string
+     */
+    public function getMethod();
+
+    /**
+     * Set Method.
+     * @param $method
+     */
+    public function setMethod($method);
 
     /**
      * Get CreatedAt.
@@ -122,15 +116,4 @@ interface CallbackInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @param $updatedAt
      */
     public function setUpdatedAt($updatedAt);
-
-    /**
-     * @return \PicPay\Checkout\Api\Data\CallbackExtensionInterface|null
-     */
-    public function getExtensionAttributes();
-
-    /**
-     * @param \PicPay\Checkout\Api\Data\CallbackExtensionInterface $extensionAttributes
-     * @return void
-     */
-    public function setExtensionAttributes(CallbackExtensionInterface $extensionAttributes);
 }

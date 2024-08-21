@@ -1,21 +1,4 @@
 <?php
-/**
- *
- *
- *
- *
- *
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- *
- *
- */
 
 namespace PicPay\Checkout\Gateway\Http\Client;
 
@@ -32,10 +15,6 @@ class Refund implements ClientInterface
      */
     private $api;
 
-    /**
-     * @param Data $helper
-     * @param Api $api
-     */
     public function __construct(
         Api $api
     ) {
@@ -43,8 +22,6 @@ class Refund implements ClientInterface
     }
 
     /**
-     * Places request to gateway. Returns result as ENV array
-     *
      * @param TransferInterface $transferObject
      * @return array
      */
@@ -52,24 +29,31 @@ class Refund implements ClientInterface
     {
         $requestBody = $transferObject->getBody();
         $config = $transferObject->getClientConfig();
+        $transaction = $this->executeRequest($requestBody, $config);
+        $statusCode = $transaction['status'] ?? null;
 
+        return [
+            'status' => $transaction['response']['status'] ?? $statusCode,
+            'status_code' => $transaction['status'] ?? null,
+            'transaction' => $transaction['response']
+        ];
+    }
+
+    protected function executeRequest($requestBody, $config): array
+    {
         $this->api->logRequest($requestBody, self::LOG_NAME);
         $transaction = $this->api->refund()->execute(
             $requestBody,
-            $config['store_id']
+            $config['order_id']
         );
         $this->api->logResponse($transaction, self::LOG_NAME);
-
-        $statusCode = $transaction['status'] ?? null;
-        $status = $transaction['response']['status'] ?? $statusCode;
-
         $this->api->saveRequest(
             $requestBody,
             $transaction['response'],
-            $statusCode,
+            $transaction['status'] ?? null,
             self::LOG_NAME
         );
 
-        return ['status' => $status, 'status_code' => $statusCode, 'transaction' => $transaction['response']];
+        return $transaction;
     }
 }

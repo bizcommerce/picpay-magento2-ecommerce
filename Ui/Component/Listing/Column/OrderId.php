@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @package PicPay\Checkout
- * @copyright Copyright (c) 2021 PicPay
- * @license https://opensource.org/licenses/OSL-3.0.php Open Software License 3.0
- */
-
 namespace PicPay\Checkout\Ui\Component\Listing\Column;
 
 use PicPay\Checkout\Helper\Data;
@@ -17,33 +11,38 @@ use Magento\Backend\Model\UrlInterface;
 class OrderId extends Column
 {
     /**
-     * @var UrlInterface
-     */
-    protected $urlBuilder;
-    /**
      * @var Data
      */
     protected $helper;
 
     /**
-     * @param ContextInterface $context
-     * @param UiComponentFactory $uiComponentFactory
-     * @param UrlInterface $urlBuilder
-     * @param Data $helper
-     * @param array $components
-     * @param array $data
+     * @var UrlInterface
      */
+    protected $urlBuilder;
+
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        UrlInterface $urlBuilder,
         Data $helper,
+        UrlInterface $urlBuilder,
         array $components = [],
         array $data = []
     ) {
-        $this->urlBuilder = $urlBuilder;
         $this->helper = $helper;
+        $this->urlBuilder = $urlBuilder;
         parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    protected function getOrderViewLink($entityId): string
+    {
+        return $this->urlBuilder->getUrl(
+            'sales/order/view',
+            ['order_id' => $entityId]
+        );
     }
 
     /**
@@ -60,11 +59,7 @@ class OrderId extends Column
                 if ($item['increment_id']) {
                     $order = $this->helper->loadOrder($item['increment_id']);
                     $orderId = $order->getId();
-                    $item[$fieldName] = sprintf(
-                        '<a href="%s">%s</a>',
-                        $this->getViewLink($orderId),
-                        $item['increment_id']
-                    );
+                    $item[$fieldName] = $this->formatFieldName($orderId, $item['increment_id']);
                 } else {
                     $item[$fieldName] = __('Not Available');
                 }
@@ -74,15 +69,12 @@ class OrderId extends Column
         return $dataSource;
     }
 
-    /**
-     * @param $entityId
-     * @return string
-     */
-    protected function getViewLink($entityId)
+    protected function formatFieldName($orderId, $incrementId): string
     {
-        return $this->urlBuilder->getUrl(
-            'sales/order/view',
-            ['order_id' => $entityId]
+        return sprintf(
+            '<a href="%s">%s</a>',
+            $this->getOrderViewLink($orderId),
+            $incrementId
         );
     }
 }

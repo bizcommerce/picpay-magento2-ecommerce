@@ -268,39 +268,6 @@ class Data extends \Magento\Payment\Helper\Data
         return [];
     }
 
-    /**
-    * @param $request
-    * @param $response
-    * @param $statusCode
-    * @param $method
-    * @return void
-     */
-    public function saveRequest($request, $response, $statusCode, string $method = 'picpay_checkout'): void
-    {
-        if ($this->getGeneralConfig('debug')) {
-            try {
-                if (!is_string($request)) {
-                    $request = $this->json->serialize($request);
-                }
-                if (!is_string($response)) {
-                    $response = $this->json->serialize($response);
-                }
-                $request = $this->mask($request);
-                $response = $this->mask($response);
-
-                $requestModel = $this->requestFactory->create();
-                $requestModel->setRequest($request);
-                $requestModel->setResponse($response);
-                $requestModel->setMethod($method);
-                $requestModel->setStatusCode($statusCode);
-
-                $this->requestRepository->save($requestModel);
-            } catch (\Exception $e) {
-                $this->log($e->getMessage());
-            }
-        }
-    }
-
     public function getConfig(
         string $config,
         string $group = 'picpay_checkout_cc',
@@ -326,14 +293,57 @@ class Data extends \Magento\Payment\Helper\Data
         );
     }
 
-    public function getGeneralConfig(string $config, $scopeCode = null): string
+    /**
+     * @param $request
+     * @param $response
+     * @param $statusCode
+     * @param $method
+     * @return void
+     */
+    public function saveRequest(
+        $request,
+        $response,
+        $statusCode,
+        string $method = 'picpay_checkout'
+    ): void {
+        if ((bool) $this->getGeneralConfig('debug')) {
+            try {
+                $request = $this->serializeAndMask($request);
+                $response = $this->serializeAndMask($response);
+
+                $requestModel = $this->requestFactory->create();
+                $requestModel->setRequest($request);
+                $requestModel->setResponse($response);
+                $requestModel->setMethod($method);
+                $requestModel->setStatusCode($statusCode);
+
+                $this->requestRepository->save($requestModel);
+            } catch (\Exception $e) {
+                $this->log($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @param $data
+     * @return bool|string
+     */
+    public function serializeAndMask($data): string|bool
     {
-        return $this->getConfig($config, 'general', 'picpay_checkout', $scopeCode);
+        if (!is_string($data)) {
+            $data = $this->json->serialize($data);
+        }
+        return $this->mask($data);
     }
 
     public function isLateCapture(): bool
     {
         return ! ((bool) $this->getConfig('auto_capture'));
+    }
+
+    public function getGeneralConfig(string $config, $scopeCode = null): string
+    {
+        return $this->getConfig($config, 'general', 'picpay_checkout', $scopeCode);
     }
 
     public function getEndpointConfig(string $config, string $scopeCode = null): string
@@ -458,5 +468,45 @@ class Data extends \Magento\Payment\Helper\Data
     {
         $softDescriptor = $this->getGeneralConfig('soft_descriptor') ?: $this->getStoreName();
         return substr($softDescriptor, 0, 13);
+    }
+
+    public function getConvertedDate($date, int $additionalSeconds = 0, bool $setTimeZone = true): string
+    {
+        $date = new \DateTime($date, new \DateTimeZone('UTC'));
+
+        if ($setTimeZone) {
+            $timezone = new \DateTimeZone('America/Sao_Paulo');
+            $date->setTimezone($timezone);
+        }
+
+        $interval = new \DateInterval("PT{$additionalSeconds}S");
+        $date->add($interval);
+
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * @param $startDate
+     * @param $endDate
+     * @return float|int
+     * @throws \Exception
+     */
+    public function getDiffBetweenDates($startDate, $endDate)
+    {
+        $start = new \DateTime($startDate, new \DateTimeZone('UTC'));
+
+        if ($start->format('Y-m-d H:i:s') > $endDate) {
+            return 0;
+        }
+
+        $end = new \DateTime($endDate, new \DateTimeZone('UTC'));
+
+        $interval = $start->diff($end);
+        $seconds = ($interval->days * 24 * 60 * 60) +
+            ($interval->h * 60 * 60) +
+            ($interval->i * 60) +
+            $interval->s;
+
+        return $seconds;
     }
 }

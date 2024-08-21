@@ -1,21 +1,4 @@
 <?php
-/**
- *
- *
- *
- *
- *
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- *
- *
- */
 
 namespace PicPay\Checkout\Model\ResourceModel;
 
@@ -27,22 +10,19 @@ use PicPay\Checkout\Model\ResourceModel\Request as ResourceRequest;
 use PicPay\Checkout\Model\ResourceModel\Request\CollectionFactory as RequestCollectionFactory;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Model\StoreManagerInterface;
 
 class RequestRepository implements RequestRepositoryInterface
 {
-
     /** @var ResourceRequest  */
     protected $resource;
 
-    /** @var RequestFactory  */
-    protected $requestFactory;
-
     /** @var RequestCollectionFactory  */
     protected $requestCollectionFactory;
+
+    /** @var RequestFactory  */
+    protected $requestFactory;
 
     /** @var RequestSearchResultsInterfaceFactory  */
     protected $searchResultsFactory;
@@ -50,35 +30,26 @@ class RequestRepository implements RequestRepositoryInterface
     /** @var RequestInterfaceFactory  */
     protected $dataRequestFactory;
 
+    /** @var CollectionProcessorInterface  */
+    protected $collectionProcessor;
+
     /** @var JoinProcessorInterface  */
     protected $extensionAttributesJoinProcessor;
 
-    /** @var CollectionProcessorInterface  */
-    private $collectionProcessor;
-
-    /**
-     * @param ResourceRequest $resource
-     * @param RequestFactory $requestFactory
-     * @param RequestInterfaceFactory $dataRequestFactory
-     * @param RequestCollectionFactory $requestCollectionFactory
-     * @param RequestSearchResultsInterfaceFactory $searchResultsFactory
-     * @param CollectionProcessorInterface $collectionProcessor
-     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
-     */
     public function __construct(
         ResourceRequest $resource,
+        RequestCollectionFactory $requestCollectionFactory,
         RequestFactory $requestFactory,
         RequestInterfaceFactory $dataRequestFactory,
-        RequestCollectionFactory $requestCollectionFactory,
         RequestSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
         $this->resource = $resource;
-        $this->requestFactory = $requestFactory;
         $this->requestCollectionFactory = $requestCollectionFactory;
-        $this->searchResultsFactory = $searchResultsFactory;
+        $this->requestFactory = $requestFactory;
         $this->dataRequestFactory = $dataRequestFactory;
+        $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
     }
@@ -101,16 +72,17 @@ class RequestRepository implements RequestRepositoryInterface
      * {@inheritdoc}
      */
     public function save(
-        \PicPay\Checkout\Api\Data\RequestInterface $request
+        \PicPay\Checkout\Api\Data\RequestInterface $callback
     ) {
         try {
-            $request = $this->resource->save($request);
+            $request = $this->resource->save($callback);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__(
                 'Could not save the request info: %1',
                 $exception->getMessage()
             ));
         }
+
         return $request;
     }
 
@@ -118,7 +90,7 @@ class RequestRepository implements RequestRepositoryInterface
      * {@inheritdoc}
      */
     public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $criteria
+        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
     ) {
         $collection = $this->requestCollectionFactory->create();
 
@@ -127,10 +99,10 @@ class RequestRepository implements RequestRepositoryInterface
             \PicPay\Checkout\Api\Data\RequestInterface::class
         );
 
-        $this->collectionProcessor->process($criteria, $collection);
+        $this->collectionProcessor->process($searchCriteria, $collection);
 
         $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($criteria);
+        $searchResults->setSearchCriteria($searchCriteria);
 
         $items = [];
         foreach ($collection as $model) {

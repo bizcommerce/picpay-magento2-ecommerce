@@ -37,12 +37,6 @@ class PaymentsRequest
      * @var ConfigInterface
      */
     protected $config;
-
-    /**
-     * @var DateTime
-     */
-    protected $date;
-
     /**
      * @var Data
      */
@@ -61,17 +55,23 @@ class PaymentsRequest
     /**
      * @var DateTime
      */
-    protected $dateTime;
+    protected $date;
+
 
     /**
-     * @var ProductRepositoryInterface
+     * @var DateTime
      */
-    protected $productRepository;
+    protected $dateTime;
 
     /**
      * @var CategoryRepositoryInterface
      */
     protected $categoryRepository;
+
+    /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
 
     /**
      * @var string
@@ -87,21 +87,21 @@ class PaymentsRequest
         ManagerInterface $eventManager,
         Data $helper,
         DateTime $date,
+        DateTime $dateTime,
         ConfigInterface $config,
         CustomerSession $customerSession,
-        DateTime $dateTime,
-        ProductRepositoryInterface $productRepository,
         CategoryRepositoryInterface $categoryRepository,
+        ProductRepositoryInterface $productRepository,
         Api $api
     ) {
         $this->eventManager = $eventManager;
         $this->helper = $helper;
         $this->date = $date;
+        $this->dateTime = $dateTime;
         $this->config = $config;
         $this->customerSession = $customerSession;
-        $this->dateTime = $dateTime;
-        $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
         $this->api = $api;
     }
 
@@ -125,7 +125,7 @@ class PaymentsRequest
     protected function getTransactionInfo(Order $order, float $orderAmount): array
     {
         $transactionInfo = [
-            'amount' => $orderAmount,
+            'amount' => $orderAmount * 100,
             'softDescriptor' => $this->helper->getSoftDescriptor(),
             'transactionId' => $order->getIncrementId()
         ];
@@ -209,7 +209,7 @@ class PaymentsRequest
         if ($picpayCustomerTaxVat) {
             $customerTaxVat = $picpayCustomerTaxVat;
         }
-        return $customerTaxVat;
+        return $this->helper->digits($customerTaxVat);
     }
 
     /**

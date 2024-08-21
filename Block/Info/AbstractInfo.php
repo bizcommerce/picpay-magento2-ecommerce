@@ -1,20 +1,7 @@
 <?php
-/**
- *
- * NOTICE OF LICENSE
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    PicPay
- * @package     PicPay_Checkout
- */
 
 namespace PicPay\Checkout\Block\Info;
 
-use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Block\ConfigurableInfo;
 use Magento\Payment\Gateway\ConfigInterface;
@@ -23,38 +10,31 @@ use Magento\Payment\Model\Config;
 class AbstractInfo extends ConfigurableInfo
 {
     /**
-     * @var ConfigInterface
-     */
-    protected $config;
-
-    /**
      * @var Config
      */
     protected $paymentConfig;
 
     /**
-     * Info constructor.
-     * @param Context $context
-     * @param ConfigInterface $config
-     * @param Config $paymentConfig
-     * @param array $data
+     * @var ConfigInterface
      */
+    protected $config;
+
     public function __construct(
         Context $context,
-        ConfigInterface $config,
         Config $paymentConfig,
+        ConfigInterface $config,
         array $data = []
     ) {
         parent::__construct($context, $config, $data);
-        $this->paymentConfig = $paymentConfig;
         $this->config = $config;
-
-        if (isset($data['pathPattern'])) {
-            $this->config->setPathPattern($data['pathPattern']);
-        }
+        $this->paymentConfig = $paymentConfig;
 
         if (isset($data['methodCode'])) {
             $this->config->setMethodCode($data['methodCode']);
+        }
+
+        if (isset($data['pathPattern'])) {
+            $this->config->setPathPattern($data['pathPattern']);
         }
     }
 
@@ -77,14 +57,25 @@ class AbstractInfo extends ConfigurableInfo
     {
         $transport = \Magento\Payment\Block\Info::_prepareSpecificInformation($transport);
         $payment = $this->getInfo();
-        $storedFields = explode(',', (string)$this->config->getValue('paymentInfoKeys'));
-        if (!$this->isAdmin()) {
-            $storedFields = array_diff(
-                $storedFields,
-                explode(',', (string)$this->config->getValue('privateInfoKeys'))
-            );
+        $storedFields = explode(',', (string) $this->config->getValue('paymentInfoKeys'));
+
+        if (!$this->isAdminBackend()) {
+            $storedFields = $this->getStoredFields($storedFields);
         }
 
+        $this->prepareData($storedFields, $payment, $transport);
+
+        return $transport;
+    }
+
+    /**
+     * @param array $storedFields
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param \Magento\Framework\DataObject|array|null $transport
+     * @return void
+     */
+    public function prepareData(array $storedFields, $payment, $transport): void
+    {
         foreach ($storedFields as $field) {
             if ($payment->getAdditionalInformation($field) !== null) {
                 $this->setDataToTransfer(
@@ -94,8 +85,18 @@ class AbstractInfo extends ConfigurableInfo
                 );
             }
         }
+    }
 
-        return $transport;
+    /**
+     * @param array $storedFields
+     * @return array
+     */
+    public function getStoredFields(array $storedFields): array
+    {
+        return array_diff(
+            $storedFields,
+            explode(',', (string)$this->config->getValue('privateInfoKeys'))
+        );
     }
 
     /**
@@ -129,7 +130,7 @@ class AbstractInfo extends ConfigurableInfo
      * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function isAdmin()
+    public function isAdminBackend()
     {
         return ($this->_appState->getAreaCode() == \Magento\Framework\App\Area::AREA_ADMINHTML);
     }

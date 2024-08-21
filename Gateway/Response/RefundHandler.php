@@ -28,26 +28,21 @@ use Magento\Payment\Gateway\Response\HandlerInterface;
 class RefundHandler implements HandlerInterface
 {
     /**
-     * @var HelperOrder
-     */
-    protected $helperOrder;
-
-    /**
      * @var Api
      */
     protected $api;
 
     /**
-     * constructor.
-     * @param HelperOrder $helperOrder
-     * @param Api $api
+     * @var HelperOrder
      */
+    protected $helperOrder;
+
     public function __construct(
-        HelperOrder $helperOrder,
-        Api $api
+        Api $api,
+        HelperOrder $helperOrder
     ) {
-        $this->helperOrder = $helperOrder;
         $this->api = $api;
+        $this->helperOrder = $helperOrder;
     }
 
     /**
@@ -60,7 +55,8 @@ class RefundHandler implements HandlerInterface
      */
     public function handle(array $handlingSubject, array $response)
     {
-        if (!isset($handlingSubject['payment'])
+        if (
+            !isset($handlingSubject['payment'])
             || !$handlingSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
             throw new \InvalidArgumentException(__('Payment data object should be provided'));

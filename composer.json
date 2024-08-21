@@ -1,11 +1,8 @@
 {
     "name": "picpay/magento2-checkout",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "N/A",
     "type": "magento2-module",
-    "require": {
-        "magento/framework": "*"
-    },
     "license": [
         "Open Software License (OSL)"
     ],

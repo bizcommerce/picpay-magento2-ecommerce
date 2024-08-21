@@ -17,10 +17,18 @@
         <arguments>
             <argument name="configProviders" xsi:type="array">
                 <item name="picpay_checkout_cc_config_provider" xsi:type="object">PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider</item>
+                <item name="picpay_checkout_pix_config_provider" xsi:type="object">PicPay\Checkout\Model\Ui\Pix\ConfigProvider</item>
             </argument>
         </arguments>
     </type>
     <type name="PicPay\Checkout\Block\Info\CreditCard">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item xsi:type="string" name="is_secure_mode">1</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="PicPay\Checkout\Block\Info\Pix">
         <arguments>
             <argument name="data" xsi:type="array">
                 <item xsi:type="string" name="is_secure_mode">1</item>

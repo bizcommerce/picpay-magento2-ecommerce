@@ -60,11 +60,6 @@ class Order extends \Magento\Payment\Helper\Data
     public const DEFAULT_QRCODE_WIDTH = 400;
 
     /**
-     * @var HelperData
-     */
-    protected $helperData;
-
-    /**
      * @var OrderFactory
      */
     protected $orderFactory;
@@ -80,6 +75,11 @@ class Order extends \Magento\Payment\Helper\Data
     protected $invoiceRepository;
 
     /**
+     * @var HelperData
+     */
+    protected $helperData;
+
+    /**
      * @var CreditmemoFactory
      */
     protected $creditmemoFactory;
@@ -90,14 +90,14 @@ class Order extends \Magento\Payment\Helper\Data
     protected $creditmemoService;
 
     /**
-     * @var ResourcePayment
-     */
-    protected $resourcePayment;
-
-    /**
      * @var CollectionFactory
      */
     protected $orderStatusCollectionFactory;
+
+    /**
+     * @var ResourcePayment
+     */
+    protected $resourcePayment;
 
     /**
      * @var Filesystem
@@ -158,18 +158,28 @@ class Order extends \Magento\Payment\Helper\Data
     ) {
         parent::__construct($context, $layoutFactory, $paymentMethodFactory, $appEmulation, $paymentConfig, $initialConfig);
 
-        $this->helperData = $helperData;
         $this->orderFactory = $orderFactory;
         $this->orderRepository = $orderRepository;
         $this->invoiceRepository = $invoiceRepository;
         $this->creditmemoFactory = $creditmemoFactory;
-        $this->creditmemoService = $creditmemoService;
         $this->resourcePayment = $resourcePayment;
+        $this->creditmemoService = $creditmemoService;
         $this->filesystem = $filesystem;
         $this->dateTime = $dateTime;
         $this->client = $client;
         $this->api = $api;
+        $this->helperData = $helperData;
         $this->orderStatusCollectionFactory = $orderStatusCollectionFactory;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return void
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    public function savePayment($payment): void
+    {
+        $this->resourcePayment->save($payment);
     }
 
     /**
@@ -179,6 +189,7 @@ class Order extends \Magento\Payment\Helper\Data
      * @param string $picpayStatus
      * @param array $content
      * @param float $amount
+     * @param string $method
      * @param bool $callback
      * @return bool
      */
@@ -187,6 +198,7 @@ class Order extends \Magento\Payment\Helper\Data
         string $picpayStatus,
         array $content,
         float $amount,
+        string $method,
         bool $callback = false
     ): bool {
         try {
@@ -203,8 +215,8 @@ class Order extends \Magento\Payment\Helper\Data
                         }
 
                         $updateStatus = $order->getIsVirtual()
-                            ? $this->helperData->getConfig('paid_virtual_order_status')
-                            : $this->helperData->getConfig('paid_order_status');
+                            ? $this->helperData->getConfig('paid_virtual_order_status', $method)
+                            : $this->helperData->getConfig('paid_order_status', $method);
 
                         $message = __('Your payment for the order %1 was confirmed', $order->getIncrementId());
                         $order->addCommentToStatusHistory($message, $updateStatus, true);
@@ -231,28 +243,6 @@ class Order extends \Magento\Payment\Helper\Data
         }
 
         return false;
-    }
-
-    /**
-     * @param Payment $payment
-     * @return void
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     */
-    public function savePayment($payment): void
-    {
-        $this->resourcePayment->save($payment);
-    }
-
-    /**
-     * @param SalesOrder $order
-     * @param float $amount
-     */
-    protected function invoiceOrder(SalesOrder $order, $amount): void
-    {
-        /** @var Payment $payment */
-        $payment = $order->getPayment();
-        $payment->setParentTransactionId($payment->getLastTransId());
-        $payment->registerCaptureNotification($amount);
     }
 
     /**
@@ -286,21 +276,13 @@ class Order extends \Magento\Payment\Helper\Data
     /**
      * @param SalesOrder $order
      * @param float $amount
-     * @param bool $callback
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function refundOrder(SalesOrder $order, float $amount, bool $callback = false): SalesOrder
+    protected function invoiceOrder(SalesOrder $order, $amount): void
     {
-        if ($order->getBaseGrandTotal() == $amount) {
-            return $this->cancelOrder($order, $amount, $callback);
-        }
-
-        $totalRefunded = (float) $order->getTotalRefunded() + $amount;
-        $order->setTotalRefunded($totalRefunded);
-        $order->addCommentToStatusHistory(__('The order had the amount refunded by PicPay. Amount of %1', $amount));
-
-        return $order;
+        /** @var Payment $payment */
+        $payment = $order->getPayment();
+        $payment->setParentTransactionId($payment->getLastTransId());
+        $payment->registerCaptureNotification($amount);
     }
 
     /**
@@ -315,9 +297,13 @@ class Order extends \Magento\Payment\Helper\Data
     }
 
     /**
-     * @param $order
+     * @param SalesOrder $order
+     * @param $captureCase
      * @return void
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function captureOrder(SalesOrder $order, $captureCase = 'online'): void
     {
@@ -334,6 +320,26 @@ class Order extends \Magento\Payment\Helper\Data
             $order->getPayment()->setAdditionalInformation('captured', true);
             $this->orderRepository->save($order);
         }
+    }
+
+    /**
+     * @param SalesOrder $order
+     * @param float $amount
+     * @param bool $callback
+     * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function refundOrder(SalesOrder $order, float $amount, bool $callback = false): SalesOrder
+    {
+        if ($order->getBaseGrandTotal() == $amount) {
+            return $this->cancelOrder($order, $amount, $callback);
+        }
+
+        $totalRefunded = (float) $order->getTotalRefunded() + $amount;
+        $order->setTotalRefunded($totalRefunded);
+        $order->addCommentToStatusHistory(__('The order had the amount refunded by PicPay. Amount of %1', $amount));
+
+        return $order;
     }
 
     /**
@@ -377,6 +383,16 @@ class Order extends \Magento\Payment\Helper\Data
         return $payment;
     }
 
+    public function updateRefundedAdditionalInformation(Payment $payment, $transaction): Payment
+    {
+        if (isset($transaction['refunds'])) {
+            foreach ($transaction['refunds'] as $i => $refund) {
+                $this->setTransactionInformation($payment, $refund, 'refund-' . $i . '-');
+            }
+        }
+        return $payment;
+    }
+
     public function updateCcAdditionalInfo(Payment $payment, array $transactions): Payment
     {
         try {
@@ -393,51 +409,23 @@ class Order extends \Magento\Payment\Helper\Data
         return $payment;
     }
 
-    public function updateRefundedAdditionalInformation(Payment $payment, $transaction): Payment
+    public function updatePixAdditionalInfo(Payment $payment, array $transactions): Payment
     {
-        if (isset($transaction['refunds'])) {
-            foreach ($transaction['refunds'] as $i => $refund) {
-                $this->setTransactionInformation($payment, $refund, 'refund-' . $i . '-');
+        try {
+            foreach ($transactions as $i => $transaction) {
+                if (isset($transaction['pix'])) {
+                    $prefix = 'pix' . (string) ($i + 1) . '-';
+                    $this->setTransactionInformation($payment, $transaction['pix'], $prefix);
+                }
             }
+        } catch (\Exception $e) {
+            $this->_logger->warning($e->getMessage());
         }
+
         return $payment;
     }
 
-    public function generateQrCode($payment, $qrCode): string
-    {
-        $pixUrl = '';
-        if ($qrCode) {
-            try {
-                $renderer = new QrCodeImageRenderer(
-                    new QrCodeRendererStyle(self::DEFAULT_QRCODE_WIDTH),
-                    new QrCodeImagickImageBackEnd()
-                );
-                $writer = new QrCodeWritter($renderer);
-                $pixQrCode = $writer->writeString($qrCode);
-
-                $filename = 'picpay_checkout/pix-' . $payment->getOrder()->getIncrementId() . '.png';
-                $media = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-                $media->writeFile($filename, $pixQrCode);
-
-                $pixUrl = $this->helperData->getMediaUrl() . $filename;
-            } catch (\Exception $e) {
-                $this->helperData->log($e->getMessage());
-            }
-        }
-
-        return $pixUrl;
-    }
-
-    public function loadOrderByMerchantChargeId(string $chargeId): SalesOrder
-    {
-        $order = $this->orderFactory->create();
-        if ($chargeId) {
-            $order->loadByAttribute('picpay_charge_id', $chargeId);
-        }
-        return $order;
-    }
-
-    public function getStatusState($status): string
+    public function getStatusState(string $status): string
     {
         if ($status) {
             $statuses = $this->orderStatusCollectionFactory
@@ -453,6 +441,15 @@ class Order extends \Magento\Payment\Helper\Data
         return '';
     }
 
+    public function loadOrderByMerchantChargeId(string $chargeId): SalesOrder
+    {
+        $order = $this->orderFactory->create();
+        if ($chargeId) {
+            $order->loadByAttribute('picpay_charge_id', $chargeId);
+        }
+        return $order;
+    }
+
     /**
      * @param $payment
      * @return string
@@ -460,31 +457,7 @@ class Order extends \Magento\Payment\Helper\Data
     public function getPaymentStatusState($payment): string
     {
         $defaultState = $payment->getOrder()->getState();
-        $paymentMethod = $payment->getMethodInstance();
-        if (!$paymentMethod) {
-            return $defaultState;
-        }
-
-        $status = $paymentMethod->getConfigData('order_status');
-        if (!$status) {
-            return $defaultState;
-        }
-
-        $state = $this->getStatusState($status);
-        if (!$state) {
-            return $defaultState;
-        }
-
-        return $state;
-    }
-
-
-    /**
-     * @param $state
-     * @return bool
-     */
-    public function canSkipOrderProcessing($state): bool
-    {
-        return $state != SalesOrder::STATE_PROCESSING;
+        $status = $payment->getMethodInstance()->getConfigData('order_status');
+        return $status ? $this->getStatusState($status) : $defaultState;
     }
 }

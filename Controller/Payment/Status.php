@@ -1,24 +1,22 @@
 <?php
 
-namespace PicPay\Checkout\Controller\Installments;
+namespace PicPay\Checkout\Controller\Payment;
 
 use PicPay\Checkout\Helper\Data as HelperData;
-use PicPay\Checkout\Helper\Installments;
+use PicPay\Checkout\Helper\Order as HelperOrder;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 
-class Retrieve extends Action implements HttpPostActionInterface, CsrfAwareActionInterface
+class Status extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
 {
     /** @var JsonFactory */
     protected $resultJsonFactory;
@@ -35,56 +33,46 @@ class Retrieve extends Action implements HttpPostActionInterface, CsrfAwareActio
     /** @var HelperData */
     protected $helperData;
 
-    /** @var Installments */
-    private $helperInstallments;
-
     public function __construct(
-        Context $context,
-        Session $checkoutSession,
+        Context                 $context,
+        Session                 $checkoutSession,
         SessionManagerInterface $session,
-        JsonFactory $resultJsonFactory,
-        Json $json,
-        HelperData $helperData,
-        Installments $helperInstallments
-    ) {
+        JsonFactory             $resultJsonFactory,
+        Json                    $json,
+        HelperData              $helperData
+    )
+    {
         $this->checkoutSession = $checkoutSession;
         $this->session = $session;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->json = $json;
         $this->helperData = $helperData;
-        $this->helperInstallments = $helperInstallments;
 
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $responseCode = 401;
-        $result = $this->resultJsonFactory->create();
+        header('Content-Type: text/event-stream');
+        header('Cache-Control: no-cache');
 
-        try {
-            $content = $this->getRequest()->getContent();
-            $bodyParams = ($content) ? $this->json->unserialize($content) : [];
-            $ccType = $bodyParams['cc_type'] ?? '';
+        $lastOrder = $this->checkoutSession->getLastRealOrder();
+        if ($lastOrder->getId()) {
+            $payment = $lastOrder->getPayment();
+            $result = [
+                'order_id' => $lastOrder->getId(),
+                'order_status' => $lastOrder->getStatus(),
+                'payment_status' => $payment->getAdditionalInformation('status'),
+                'is_paid' => $payment->getAdditionalInformation('status') == HelperOrder::STATUS_PAID,
+                'redirect' => $this->_url->getUrl('sales/order/view/', ['order_id' => $lastOrder->getId()])
+            ];
 
-            $result->setJsonData($this->json->serialize($this->getInstallments($ccType)));
-            $responseCode = 200;
-        } catch (\Exception $e) {
-            $responseCode = 500;
+            //echo "data: " . json_encode($result) . "\n\n";
+            $this->getResponse()->setBody( "data: " . json_encode($result) . "\n\n");
+            $this->getResponse()->sendResponse();
+            flush();
+
         }
-
-        $result->setHttpResponseCode($responseCode);
-        return $result;
-    }
-
-    /**
-     * @throws NoSuchEntityException
-     * @throws LocalizedException
-     */
-    public function getInstallments(string $ccType): array
-    {
-        $this->session->setPicPayCcType($ccType);
-        return $this->helperInstallments->getAllInstallments($this->checkoutSession->getQuote()->getGrandTotal());
     }
 
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
