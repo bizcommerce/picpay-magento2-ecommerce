@@ -3,7 +3,7 @@
 **Composer**
 
 ```
-composer require picpay/magento2
+composer require picpay/ecommerce-integration-magento2
 
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
@@ -40,7 +40,7 @@ php bin/magento setup:static-content:deploy pt_BR en_US
 
 Rode o comando de remoção via composer:
 ```
-composer remove picpay/magento2
+composer remove picpay/ecommerce-integration-magento2
 ```
 
 **Manual**
