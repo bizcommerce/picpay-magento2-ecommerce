@@ -3,7 +3,7 @@
 **Composer**
 
 ```
-composer require picpay/magento2-checkout
+composer require picpay/magento2
 
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
@@ -12,11 +12,16 @@ php bin/magento setup:static-content:deploy pt_BR en_US
 
 **Instalação Manual**
 
+1 - Instale as demais dependências, com os comandos abaixo:
 
-
-1 - Faça Download do módulo e coloque na pasta
 ```
-app/code/PicPay/Checkout
+composer require firebase/php-jwt:*
+composer require bacon/bacon-qr-code:*
+```
+
+2 - Faça Download do módulo e coloque na pasta
+```
+app/code/Picpay/Payment
 ```
 
 3 - Depois rodar os comandos de instalação
@@ -35,14 +40,14 @@ php bin/magento setup:static-content:deploy pt_BR en_US
 
 Rode o comando de remoção via composer:
 ```
-composer remove picpay/magento2-checkout
+composer remove picpay/magento2
 ```
 
 **Manual**
 
 Remova a pasta:
 ```
-app/code/PicPay/Checkout
+app/code/Picpay/Payment
 ```
 
 2 - Rode os comandos de atualização
