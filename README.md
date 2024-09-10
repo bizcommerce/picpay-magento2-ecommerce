@@ -47,7 +47,7 @@ composer remove picpay/ecommerce-integration-magento2
 
 Remova a pasta:
 ```
-app/code/Picpay/Payment
+app/code/Picpay/Checkout
 ```
 
 2 - Rode os comandos de atualização
