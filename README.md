@@ -21,7 +21,7 @@ composer require bacon/bacon-qr-code:*
 
 2 - Faça Download do módulo e coloque na pasta
 ```
-app/code/Picpay/Payment
+app/code/PicPay/Checkout
 ```
 
 3 - Depois rodar os comandos de instalação
@@ -47,7 +47,7 @@ composer remove picpay/ecommerce-integration-magento2
 
 Remova a pasta:
 ```
-app/code/Picpay/Checkout
+app/code/PicPay/Checkout
 ```
 
 2 - Rode os comandos de atualização
