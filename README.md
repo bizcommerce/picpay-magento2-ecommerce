@@ -66,4 +66,4 @@ O módulo utiliza a API da PicPay Arranjo Abert para a geração de pagamentos c
 
 ## Webhooks
 Será preciso habilitar e cadastrar os webhook no picpay, para isso acesse o painel do picpay e siga as instruções.  
-Link: https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhooks
+Link: https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhook
