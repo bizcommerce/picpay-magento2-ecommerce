@@ -1,5 +1,5 @@
 {
-    "name": "picpay/magento2-checkout",
+    "name": "picpay/ecommerce-integration-magento2",
     "version": "1.1.0",
     "description": "N/A",
     "type": "magento2-module",
