@@ -18,9 +18,8 @@
  *
  */
 
-namespace PicPay\Checkout\Gateway\Response\CreditCard;
+namespace PicPay\Checkout\Gateway\Response\Wallet;
 
-use Magento\Sales\Api\Data\TransactionInterface;
 use PicPay\Checkout\Gateway\Response\PaymentsHandler;
 use PicPay\Checkout\Gateway\Http\Client\Api;
 use PicPay\Checkout\Helper\Data;
@@ -71,7 +70,7 @@ class TransactionHandler extends PaymentsHandler implements HandlerInterface
         /** @var $payment \Magento\Sales\Model\Order\Payment */
         $payment = $paymentData->getPayment();
         $payment = $this->helperOrder->updateDefaultAdditionalInfo($payment, $transaction);
-        $payment = $this->helperOrder->updatePaymentAdditionalInfo($payment, $transaction['transactions'], 'credit');
+        $payment = $this->helperOrder->updatePaymentAdditionalInfo($payment, $transaction['transactions'], 'wallet');
 
         if ($transaction['chargeStatus'] == HelperOrder::STATUS_PRE_AUTHORIZED) {
             $payment->getOrder()->setState('new');

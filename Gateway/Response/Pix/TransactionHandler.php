@@ -70,7 +70,7 @@ class TransactionHandler extends PaymentsHandler implements HandlerInterface
         /** @var $payment \Magento\Sales\Model\Order\Payment */
         $payment = $paymentData->getPayment();
         $payment = $this->helperOrder->updateDefaultAdditionalInfo($payment, $transaction);
-        $payment = $this->helperOrder->updatePixAdditionalInfo($payment, $transaction['transactions']);
+        $payment = $this->helperOrder->updatePaymentAdditionalInfo($payment, $transaction['transactions'], 'pix');
 
         if ($transaction['chargeStatus'] == HelperOrder::STATUS_PRE_AUTHORIZED) {
             $payment->getOrder()->setState('new');

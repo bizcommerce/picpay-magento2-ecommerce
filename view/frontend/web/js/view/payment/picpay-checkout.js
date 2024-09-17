@@ -15,6 +15,10 @@ define([
         {
             type: 'picpay_checkout_pix',
             component: 'PicPay_Checkout/js/view/payment/method-renderer/pix'
+        },
+        {
+            type: 'picpay_checkout_wallet',
+            component: 'PicPay_Checkout/js/view/payment/method-renderer/wallet'
         }
     );
 

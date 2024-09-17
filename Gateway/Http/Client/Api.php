@@ -19,6 +19,7 @@ use PicPay\Checkout\Gateway\Http\Client;
 use PicPay\Checkout\Gateway\Http\Client\Api\Card;
 use PicPay\Checkout\Gateway\Http\Client\Api\Create;
 use PicPay\Checkout\Gateway\Http\Client\Api\CreatePix;
+use PicPay\Checkout\Gateway\Http\Client\Api\CreateWallet;
 use PicPay\Checkout\Gateway\Http\Client\Api\Query;
 use PicPay\Checkout\Gateway\Http\Client\Api\Refund;
 use PicPay\Checkout\Gateway\Http\Client\Api\Capture;
@@ -42,6 +43,11 @@ class Api
      * @var CreatePix
      */
     private $createPix;
+
+    /**
+     * @var CreateWallet
+     */
+    private $createWallet;
 
     /**
      * @var Refund
@@ -78,6 +84,7 @@ class Api
         Token $token,
         Create $create,
         CreatePix $createPix,
+        CreateWallet $createWallet,
         Refund $refund,
         Capture $capture,
         Card $card,
@@ -85,7 +92,9 @@ class Api
     ) {
         $this->helper = $helper;
         $this->token = $token;
+        $this->create = $create;
         $this->createPix = $createPix;
+        $this->createWallet = $createWallet;
         $this->refund = $refund;
         $this->capture = $capture;
         $this->card = $card;
@@ -135,6 +144,14 @@ class Api
     public function createPix(): ClientInterface
     {
         return $this->getClient($this->createPix);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function createWallet(): ClientInterface
+    {
+        return $this->getClient($this->createWallet);
     }
 
     /**

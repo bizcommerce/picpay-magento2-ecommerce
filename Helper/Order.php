@@ -425,6 +425,38 @@ class Order extends \Magento\Payment\Helper\Data
         return $payment;
     }
 
+    public function updateWalletAdditionalInfo(Payment $payment, array $transactions): Payment
+    {
+        try {
+            foreach ($transactions as $i => $transaction) {
+                if (isset($transaction['wallet'])) {
+                    $prefix = 'wallet' . (string) ($i + 1) . '-';
+                    $this->setTransactionInformation($payment, $transaction['wallet'], $prefix);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->_logger->warning($e->getMessage());
+        }
+
+        return $payment;
+    }
+
+    public function updatePaymentAdditionalInfo(Payment $payment, array $transactions, $method)
+    {
+        try {
+            foreach ($transactions as $i => $transaction) {
+                if (isset($transaction[$method])) {
+                    $prefix = $method . (string) ($i + 1) . '-';
+                    $this->setTransactionInformation($payment, $transaction[$method], $prefix);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->_logger->warning($e->getMessage());
+        }
+
+        return $payment;
+    }
+
     public function getStatusState(string $status): string
     {
         if ($status) {
