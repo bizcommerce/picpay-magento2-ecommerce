@@ -47,15 +47,10 @@ $checkoutInstructions = $block->getSuccessPageInstructions();
     </dt>
 
     <dd class="content">
-        <?php if ($status == 'PAID') : ?>
-            <span><?= __('PicPay') ?></span>
-            <span><?= __('Payment received.') ?></span>
-        <?php else: ?>
-            <?= $block->escapeHtml($checkoutInstructions) ?>
-            <div class="picpay-wallet wallet" data-bind="scope: 'picpayWallet'">
-                <!-- ko template: getTemplate() --><!-- /ko -->
-            </div>
-        <?php endif; ?>
+        <?= $block->escapeHtml($checkoutInstructions) ?>
+        <div class="picpay-wallet wallet" data-bind="scope: 'picpayWallet'">
+            <!-- ko template: getTemplate() --><!-- /ko -->
+        </div>
     </dd>
 
     <?php if ($specificInfo): ?>

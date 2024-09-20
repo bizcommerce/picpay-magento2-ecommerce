@@ -48,7 +48,7 @@ $checkoutInstructions = $block->getSuccessPageInstructions();
 
     <dd class="content">
         <?php if ($status == 'PAID') : ?>
-            <span><?= __('PicPay') ?></span>
+            <h3><?= __('PicPay') ?></h3>
             <span><?= __('Payment received.') ?></span>
         <?php else: ?>
             <?= $block->escapeHtml($checkoutInstructions) ?>

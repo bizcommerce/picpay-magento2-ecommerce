@@ -86,6 +86,6 @@ class Wallet extends AbstractInfo
     public function getOrderStatus()
     {
         $payment = $this->getInfo();
-        return $payment->getAdditionalInformation('t1-transactionStatus');
+        return $payment->getAdditionalInformation('status') ?: $payment->getAdditionalInformation('t1-transactionStatus');
     }
 }

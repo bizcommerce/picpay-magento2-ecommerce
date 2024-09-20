@@ -59,7 +59,7 @@ class Payments extends Callback
                     if ($order->getId()) {
                         $orderIncrementId = $order->getIncrementId();
                         $method = $order->getPayment()->getMethod();
-                        $amount = $content['amount'] ?? $order->getGrandTotal();
+                        $amount = ($content['amount'] ?? $order->getGrandTotal()) / 100;
                         $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true);
                         $statusCode = 200;
                     }
