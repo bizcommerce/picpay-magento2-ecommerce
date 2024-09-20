@@ -183,7 +183,7 @@ class Order extends \Magento\Payment\Helper\Data
     }
 
     /**
-     * Update Order Status
+     *  Update Order Status
      *
      * @param SalesOrder $order
      * @param string $picpayStatus
@@ -191,6 +191,7 @@ class Order extends \Magento\Payment\Helper\Data
      * @param float $amount
      * @param string $method
      * @param bool $callback
+     * @param float $refundedAmount
      * @return bool
      */
     public function updateOrder(
@@ -199,7 +200,8 @@ class Order extends \Magento\Payment\Helper\Data
         array $content,
         float $amount,
         string $method,
-        bool $callback = false
+        bool $callback = false,
+        float $refundedAmount = 0
     ): bool {
         try {
             /** @var Payment $payment */
@@ -223,11 +225,12 @@ class Order extends \Magento\Payment\Helper\Data
                         break;
                     case self::STATUS_CCANCELED:
                     case self::STATUS_DENIED:
-                        $order = $this->cancelOrder($order, $amount, $callback);
+                        $order = $this->cancelOrder($order, $refundedAmount, $callback);
                         break;
                     case self::STATUS_CHARGEBACK:
                     case self::STATUS_REFUNDED:
-                        $order = $this->refundOrder($order, $amount, $callback);
+                        $refundedAmount = $refundedAmount ?? $amount;
+                        $order = $this->refundOrder($order, $refundedAmount, $callback);
                         break;
                 }
 

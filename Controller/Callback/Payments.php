@@ -12,6 +12,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use PicPay\Checkout\Controller\Callback;
 use PicPay\Checkout\Gateway\Http\Client\Api;
+use PicPay\Checkout\Helper\Order;
 use PicPay\Checkout\Helper\Order as HelperOrder;
 use Magento\Sales\Model\Order as SalesOrder;
 
@@ -59,8 +60,10 @@ class Payments extends Callback
                     if ($order->getId()) {
                         $orderIncrementId = $order->getIncrementId();
                         $method = $order->getPayment()->getMethod();
-                        $amount = ($content['amount'] ?? $order->getGrandTotal()) / 100;
-                        $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true);
+                        $amount = $content['amount'] ? $content['amount'] / 100 : $order->getGrandTotal();
+                        $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
+
+                        $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true, $refundedAmount);
                         $statusCode = 200;
                     }
                 }
