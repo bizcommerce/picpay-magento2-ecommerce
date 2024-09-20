@@ -3,7 +3,7 @@
 **Composer**
 
 ```
-composer require picpay/magento2-checkout
+composer require picpay/ecommerce-integration-magento2
 
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
@@ -12,9 +12,14 @@ php bin/magento setup:static-content:deploy pt_BR en_US
 
 **Instalação Manual**
 
+1 - Instale as demais dependências, com os comandos abaixo:
 
+```
+composer require firebase/php-jwt:*
+composer require bacon/bacon-qr-code:*
+```
 
-1 - Faça Download do módulo e coloque na pasta
+2 - Faça Download do módulo e coloque na pasta
 ```
 app/code/PicPay/Checkout
 ```
@@ -35,7 +40,7 @@ php bin/magento setup:static-content:deploy pt_BR en_US
 
 Rode o comando de remoção via composer:
 ```
-composer remove picpay/magento2-checkout
+composer remove picpay/ecommerce-integration-magento2
 ```
 
 **Manual**
@@ -62,4 +67,4 @@ O módulo utiliza a API da PicPay Arranjo Abert para a geração de pagamentos c
 
 ## Webhooks
 Será preciso habilitar e cadastrar os webhook no picpay, para isso acesse o painel do picpay e siga as instruções.  
-Link: https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhooks
+Link: https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhook
