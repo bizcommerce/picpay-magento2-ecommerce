@@ -13,6 +13,7 @@ use Magento\Framework\Controller\ResultFactory;
 use PicPay\Checkout\Controller\Callback;
 use PicPay\Checkout\Gateway\Http\Client\Api;
 use PicPay\Checkout\Helper\Order;
+use Laminas\Http\Response;
 use PicPay\Checkout\Helper\Order as HelperOrder;
 use Magento\Sales\Model\Order as SalesOrder;
 
