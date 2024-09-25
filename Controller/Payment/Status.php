@@ -73,6 +73,8 @@ class Status extends Action implements HttpGetActionInterface, CsrfAwareActionIn
             flush();
 
         }
+
+        return $this;
     }
 
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException

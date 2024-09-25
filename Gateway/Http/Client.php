@@ -14,7 +14,6 @@ use Magento\Framework\Encryption\EncryptorInterface;
 use Laminas\Http\Client as HttpClient;
 use Magento\Framework\Serialize\Serializer\Json;
 use PicPay\Checkout\Helper\Data;
-use PicPay\Checkout\Gateway\Http\ClientInterface;
 
 class Client implements ClientInterface
 {

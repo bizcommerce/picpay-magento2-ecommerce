@@ -229,7 +229,7 @@ class Order extends \Magento\Payment\Helper\Data
                         break;
                     case self::STATUS_CHARGEBACK:
                     case self::STATUS_REFUNDED:
-                        $refundedAmount = $refundedAmount ?? $amount;
+                        $refundedAmount = $refundedAmount ?: $amount;
                         $order = $this->refundOrder($order, $refundedAmount, $callback);
                         break;
                 }
@@ -393,54 +393,6 @@ class Order extends \Magento\Payment\Helper\Data
                 $this->setTransactionInformation($payment, $refund, 'refund-' . $i . '-');
             }
         }
-        return $payment;
-    }
-
-    public function updateCcAdditionalInfo(Payment $payment, array $transactions): Payment
-    {
-        try {
-            foreach ($transactions as $i => $transaction) {
-                if (isset($transaction['credit'])) {
-                    $prefix = 'credit' . (string) ($i + 1) . '-';
-                    $this->setTransactionInformation($payment, $transaction['credit'], $prefix);
-                }
-            }
-        } catch (\Exception $e) {
-            $this->_logger->warning($e->getMessage());
-        }
-
-        return $payment;
-    }
-
-    public function updatePixAdditionalInfo(Payment $payment, array $transactions): Payment
-    {
-        try {
-            foreach ($transactions as $i => $transaction) {
-                if (isset($transaction['pix'])) {
-                    $prefix = 'pix' . (string) ($i + 1) . '-';
-                    $this->setTransactionInformation($payment, $transaction['pix'], $prefix);
-                }
-            }
-        } catch (\Exception $e) {
-            $this->_logger->warning($e->getMessage());
-        }
-
-        return $payment;
-    }
-
-    public function updateWalletAdditionalInfo(Payment $payment, array $transactions): Payment
-    {
-        try {
-            foreach ($transactions as $i => $transaction) {
-                if (isset($transaction['wallet'])) {
-                    $prefix = 'wallet' . (string) ($i + 1) . '-';
-                    $this->setTransactionInformation($payment, $transaction['wallet'], $prefix);
-                }
-            }
-        } catch (\Exception $e) {
-            $this->_logger->warning($e->getMessage());
-        }
-
         return $payment;
     }
 
