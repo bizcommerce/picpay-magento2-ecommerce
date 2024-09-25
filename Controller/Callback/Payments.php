@@ -65,7 +65,7 @@ class Payments extends Callback
                         $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
 
                         $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true, $refundedAmount);
-                        $statusCode = 200;
+                        $statusCode = Response::STATUS_CODE_200;
                     }
                 }
             }
