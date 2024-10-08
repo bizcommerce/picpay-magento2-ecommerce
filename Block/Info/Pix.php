@@ -80,7 +80,7 @@ class Pix extends AbstractInfo
         if ($payment->getAdditionalInformation('t1-createdAt')) {
             $expirationDate = $this->helper->getConvertedDate(
                 $payment->getAdditionalInformation('t1-createdAt'),
-                $this->helper->getConfig('expiration_time','picpay_checkout_pix')
+                (int) $this->helper->getConfig('expiration_time','picpay_checkout_pix')
             );
             $currentDateTime = $this->helper->getConvertedDate('now');
 
