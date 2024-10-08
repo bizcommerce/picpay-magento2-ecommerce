@@ -1,6 +1,18 @@
 # PicPay - Adobe Commerce
 
-**Composer**
+O módulo PicPay Arranjo Aberto é uma solução de pagamento para lojas virtuais que utilizam o Magento Open Source ou Adobe Commerce. Ele é um facilitador de integração das funcionalidades da PicPay e permite que os lojistas aceitem pagamentos com cartões de crédito e Pix, de forma rápida, segura e confiável.
+
+## Pré-requisitos
+O módulo é compatível com a versão 2.3.6+ do Adobe Commerce e está disponível em português e inglês.
+
+- Conta criada no PICPAY. [Crie a sua aqui!](https://ecommerce-gateway.picpay.com/)
+- Magento 2.3.6+ instalado
+- PHP 7.1+
+
+
+## Instalação
+
+**Via composer**
 
 ```
 composer require picpay/ecommerce-integration-magento2
@@ -24,7 +36,7 @@ composer require bacon/bacon-qr-code:*
 app/code/PicPay/Checkout
 ```
 
-3 - Depois rodar os comandos de instalação
+3 - Execute os comandos de instalação:
 
 ```
 php bin/magento setup:upgrade
@@ -58,12 +70,13 @@ php bin/magento setup:di:compile
 php bin/magento setup:static-content:deploy pt_BR en_US
 ```
 
-## Descrição
+
 Módulo disponível em português e inglês, compatível com a versão 2.4 do Adobe Commerce.
 O módulo utiliza a API da PicPay Arranjo Abert para a geração de pagamentos com:
 - Cartão de Crédito
 - Pix
 - Wallet
+
 
 ## Webhooks
 Será preciso habilitar e cadastrar os webhook no picpay, para isso acesse o painel do picpay e siga as instruções.  
