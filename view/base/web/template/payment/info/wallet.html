@@ -1,0 +1,16 @@
+<div class="wallet-barcode-container">
+    <div class="wallet-img-code" style="width: 200px;">
+        <!-- ko if: qr_code_base64 && qr_code_base64 !== 'NA' -->
+        <img data-bind="attr: { alt: 'QRCode', src: qr_code_base64 }"
+             class="picpay-wallet-qrcode" />
+        <!-- /ko -->
+    </div>
+
+    <button class="wallet-copy-button" data-bind="click: copyPasteWalletCode, text: buttonText">
+    </button>
+</div>
+
+<div class="wallet-container" data-bind="visible: paymentReceived">
+    <h2><!-- ko i18n: 'Payment received with success!'--><!-- /ko --></h2>
+</div>
+

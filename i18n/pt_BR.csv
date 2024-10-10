@@ -128,3 +128,6 @@ Response,Resposta
 "Payment not identified. This order has been canceled or the QrCode has expired.","Pagamnto não identificado. O pedido foi cancelado ou o QrCode expirou."
 "Payment received with success!", "Pagamento recebido com sucesso!"
 "QRCode valid for: ","QrCode válido por: "
+"Success Page Instructions","Instruções da Página de Sucesso"
+"Instructions to be shown in success page, it can be HTML","Instruções para ser mostrada na página de sucesso, pode ser HTML"
+"Payment received.", "Pagamento recebido."

@@ -47,6 +47,38 @@
             }
         }
     }
+
+    .wallet {
+        .picpay-wallet-qrcode {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .wallet-barcode-container {
+            text-align: -webkit-center;
+            margin: 10px 0;
+
+            .wallet-img-code {
+                padding:15px 10px;
+                border: 2px dashed #9f9f9f;
+                border-bottom: none;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                margin-bottom: 10px;
+            }
+            .wallet-qrcode {
+                word-break: break-all;
+            }
+
+            .wallet-copy-button {
+                width: 200px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+        }
+    }
 }
 
 #payment_form_picpay_checkout_cc {

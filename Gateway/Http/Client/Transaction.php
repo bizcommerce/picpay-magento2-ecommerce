@@ -61,10 +61,17 @@ class Transaction implements ClientInterface
         $config = $transferObject->getClientConfig();
 
         $this->api->logRequest($requestBody, self::LOG_NAME);
-        if ($this->methodCode == \PicPay\Checkout\Model\Ui\Pix\ConfigProvider::CODE) {
-            $transaction = $this->api->createPix()->execute($requestBody, $config['store_id']);
-        } else {
-            $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
+        switch ($this->methodCode) {
+            case \PicPay\Checkout\Model\Ui\Pix\ConfigProvider::CODE:
+                $transaction = $this->api->createPix()->execute($requestBody, $config['store_id']);
+                break;
+
+            case \PicPay\Checkout\Model\Ui\Wallet\ConfigProvider::CODE:
+                $transaction = $this->api->createWallet()->execute($requestBody, $config['store_id']);
+                break;
+
+            default:
+                $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
         }
 
         $this->api->logResponse($transaction, self::LOG_NAME);

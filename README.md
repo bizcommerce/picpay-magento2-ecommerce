@@ -70,6 +70,14 @@ php bin/magento setup:di:compile
 php bin/magento setup:static-content:deploy pt_BR en_US
 ```
 
+
+Módulo disponível em português e inglês, compatível com a versão 2.4 do Adobe Commerce.
+O módulo utiliza a API da PicPay Arranjo Abert para a geração de pagamentos com:
+- Cartão de Crédito
+- Pix
+- Wallet
+
+
 ## Webhooks
 Será preciso habilitar e cadastrar os webhook no picpay, para isso acesse o painel do picpay e siga as instruções.  
 Link: https://picpay.github.io/picpay-docs-ms-ecommerce-checkout/docs/webhook

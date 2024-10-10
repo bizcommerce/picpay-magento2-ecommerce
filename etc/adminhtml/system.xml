@@ -21,6 +21,7 @@
                 <include path="PicPay_Checkout::system/general.xml"/>
                 <include path="PicPay_Checkout::system/credit_card.xml"/>
                 <include path="PicPay_Checkout::system/pix.xml"/>
+                <include path="PicPay_Checkout::system/wallet.xml"/>
             </group>
         </section>
     </system>

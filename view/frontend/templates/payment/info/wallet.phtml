@@ -1,0 +1,96 @@
+<?php
+
+/**
+ * PicPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the PicPay license that is
+ * available through the world-wide-web at this URL:
+ *
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    PicPay
+ * @package     PicPay_Payment
+ * @copyright   Copyright (c) PicPay
+ *
+ */
+// @codingStandardsIgnoreFile
+
+/**
+ * @var \Magento\Payment\Block\Info $block
+ * @see \Magento\Payment\Block\Info
+ */
+$specificInfo = $block->getSpecificInformation();
+$title = $block->escapeHtml($block->getMethod()->getTitle());
+?>
+
+<?php
+$specificInfo = $block->getSpecificInformation();
+$title = $block->escapeHtml($block->getMethod()->getTitle());
+$mediaUrl = $this->getMediaUrl();
+
+$title = $block->getTitle();
+$emv = $block->getCopyPasteInfo();
+$qrCodeImage = $block->getQRCodeImage();
+$status = $block->getOrderStatus();
+$checkoutInstructions = $block->getSuccessPageInstructions();
+?>
+<dl class="payment-method picpay-content">
+
+    <dt class="title">
+        <?= $block->escapeHtml($title) ?>
+    </dt>
+
+    <dd class="content">
+        <?php if ($status == 'PAID') : ?>
+            <h3><?= __('PicPay') ?></h3>
+            <span><?= __('Payment received.') ?></span>
+        <?php else: ?>
+            <?= $block->escapeHtml($checkoutInstructions) ?>
+            <div class="picpay-wallet wallet" data-bind="scope: 'picpayWallet'">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            </div>
+        <?php endif; ?>
+    </dd>
+
+    <?php if ($specificInfo): ?>
+        <dd>
+            <table class="data table picpay-data-table">
+                <?php foreach ($specificInfo as $label => $value): ?>
+                    <tr>
+                        <th scope="row"><?= $block->escapeHtml($label) ?></th>
+                        <td>
+                            <?= /* @noEscape */
+                            nl2br($block->escapeHtml(
+                                implode("\n", $block->getValueAsArray($value, false)), ['a'])
+                            ) ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </dd>
+    <?php endif; ?>
+</dl>
+<?= $block->getChildHtml() ?>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "picpayWallet": {
+                        "component": "PicPay_Checkout/js/view/info/wallet",
+                        "qr_code_base64": "<?= $qrCodeImage ?>",
+                        "qr_code": "<?= $emv ?>",
+                        "current_order_status": "<?= $status ?>"
+                    }
+                }
+            }
+        }
+    }
+</script>

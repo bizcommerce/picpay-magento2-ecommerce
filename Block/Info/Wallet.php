@@ -23,9 +23,9 @@ use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\Config;
 use PicPay\Checkout\Helper\Data;
 
-class Pix extends AbstractInfo
+class Wallet extends AbstractInfo
 {
-    protected $_template = 'PicPay_Checkout::payment/info/pix.phtml';
+    protected $_template = 'PicPay_Checkout::payment/info/wallet.phtml';
 
     /**
      * @var PriceCurrencyInterface
@@ -54,10 +54,19 @@ class Pix extends AbstractInfo
      * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
+    public function getSuccessPageInstructions()
+    {
+        return $this->helper->getConfig('success_page_instructions', 'picpay_checkout_wallet');
+    }
+
+    /**
+     * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function getCopyPasteInfo()
     {
         $payment = $this->getInfo();
-        return $payment->getAdditionalInformation('pix1-qrCode');
+        return $payment->getAdditionalInformation('wallet1-qrCode');
     }
 
     /**
@@ -67,27 +76,7 @@ class Pix extends AbstractInfo
     public function getQRCodeImage()
     {
         $payment = $this->getInfo();
-        return $payment->getAdditionalInformation('pix1-qrCodeBase64');
-    }
-
-    /**
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function getQrCodeExpirationTime()
-    {
-        $payment = $this->getInfo();
-        if ($payment->getAdditionalInformation('t1-createdAt')) {
-            $expirationDate = $this->helper->getConvertedDate(
-                $payment->getAdditionalInformation('t1-createdAt'),
-                (int) $this->helper->getConfig('expiration_time','picpay_checkout_pix')
-            );
-            $currentDateTime = $this->helper->getConvertedDate('now');
-
-            return $this->helper->getDiffBetweenDates($currentDateTime, $expirationDate);
-        }
-
-        return $payment->getAdditionalInformation('qrcode_expiration_time') ?: 300;
+        return $payment->getAdditionalInformation('wallet1-qrCodeBase64');
     }
 
     /**
@@ -97,21 +86,6 @@ class Pix extends AbstractInfo
     public function getOrderStatus()
     {
         $payment = $this->getInfo();
-        return $payment->getAdditionalInformation('t1-transactionStatus');
+        return $payment->getAdditionalInformation('status') ?: $payment->getAdditionalInformation('t1-transactionStatus');
     }
-
-
-//    /**
-//     * @param \Magento\Framework\DataObject|array|null $transport
-//     * @return \Magento\Framework\DataObject
-//     * @throws \Magento\Framework\Exception\LocalizedException
-//     */
-//    protected function _prepareSpecificInformation($transport = null)
-//    {
-//        /** @var \Magento\Sales\Model\Order $order */
-//        $order = $this->getInfo()->getOrder();
-//
-//
-//        return parent::_prepareSpecificInformation($transport);
-//    }
 }
