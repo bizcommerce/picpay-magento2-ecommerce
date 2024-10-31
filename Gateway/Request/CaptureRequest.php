@@ -38,8 +38,10 @@ class CaptureRequest implements BuilderInterface
 
         /** @var Order $order */
         $order = $payment->getOrder();
+
+        $amount = $buildSubject['amount'] ?? $order->getGrandTotal();
         $request = [
-            'amount' => $buildSubject['amount'] ?? $order->getGrandTotal()
+            'amount' => $amount * 100,
         ];
 
         $clientConfig = [
