@@ -24,6 +24,7 @@ use PicPay\Checkout\Gateway\Http\Client\Api\Query;
 use PicPay\Checkout\Gateway\Http\Client\Api\Refund;
 use PicPay\Checkout\Gateway\Http\Client\Api\Capture;
 use PicPay\Checkout\Gateway\Http\Client\Api\Token;
+use PicPay\Checkout\Gateway\Http\Client\Api\Tds;
 use PicPay\Checkout\Gateway\Http\ClientInterface;
 use PicPay\Checkout\Helper\Data;
 
@@ -75,6 +76,11 @@ class Api
     private $token;
 
     /**
+     * @var Tds
+     */
+    private $tds;
+
+    /**
      * @var string
      */
     private $bearerToken = '';
@@ -88,7 +94,8 @@ class Api
         Refund $refund,
         Capture $capture,
         Card $card,
-        Query $query
+        Query $query,
+        Tds $tds
     ) {
         $this->helper = $helper;
         $this->token = $token;
@@ -99,6 +106,7 @@ class Api
         $this->capture = $capture;
         $this->card = $card;
         $this->query = $query;
+        $this->tds = $tds;
     }
 
     /**
@@ -184,6 +192,14 @@ class Api
     public function card(): ClientInterface
     {
         return $this->getClient($this->card);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function tds(): ClientInterface
+    {
+        return $this->getClient($this->tds);
     }
 
     /**

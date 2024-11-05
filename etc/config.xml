@@ -40,6 +40,10 @@
                     <cancel>api/v1/charge/{order_id}/refund</cancel>
                     <refund>api/v1/charge/{order_id}/refund</refund>
                     <card>api/v1/cards/verification</card>
+                    <tds_setup>api/v1/charge/3ds/setup</tds_setup>
+                    <tds_enrollment>api/v1/charge/3ds/enrollment</tds_enrollment>
+                    <tds_challenge_status>api/v1/charge/3ds/:chargeId/status</tds_challenge_status>
+                    <tds_authorization>api/v1/charge/3ds/authorization</tds_authorization>
                 </payments>
             </endpoints>
         </picpay_checkout>

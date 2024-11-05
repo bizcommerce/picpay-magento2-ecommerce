@@ -27,6 +27,7 @@ define([
     'Magento_SalesRule/js/action/cancel-coupon',
     'Magento_Customer/js/model/customer',
     'Magento_Payment/js/view/payment/cc-form',
+    'mage/url',
     'PicPay_Checkout/js/model/credit-card-validation/credit-card-number-validator',
     'Magento_Payment/js/model/credit-card-validation/credit-card-data',
     'picpay-cc-form',
@@ -44,6 +45,7 @@ define([
     cancelCouponCodeAction,
     customer,
     Component,
+    urlBuilder,
     cardNumberValidator,
     creditCardData,
     creditCardForm
@@ -252,6 +254,70 @@ define([
                         });
                     });
                 }, 500);
+            }
+        },
+
+        canUseTds: function () {
+            return window.checkoutConfig.payment[this.getCode()].use_tds;
+        },
+
+        placeNotAuthorizedOrder: function () {
+            return window.checkoutConfig.payment[this.getCode()].place_not_authorized_order;
+        },
+
+        placeOrder: function (data, event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            let formData = this.getData();
+            formData.additional_data.browser_data = this.getBrowserData();
+            if (this.canUseTds()) {
+                $.ajax({
+                    url: urlBuilder.build('picpay_checkout/tds/enrollment'),
+                    global: true,
+                    data: JSON.stringify(this.getData()),
+                    contentType: 'application/json',
+                    type: 'POST',
+                    async: true
+                }).done(function (data) {
+                    alert('success')
+                    console.log(data)
+                }).fail(function (response) {
+                    alert('fail')
+                    console.log(response)
+                });
+            } else {
+                return this._super(data, event);
+            }
+
+
+            // @todo Verifica se deve usar 3DS
+            // @todo Chama a criação de sessão
+            // @todo Verifica se tem challenge, se tiver, exibe para o usuário
+
+
+
+            // Add custom logic before the order is placed
+            alert('placeOrder')
+
+            // Custom logic: for example, validating specific fields or sending data to an external service
+            console.log("Custom placeOrder logic executed");
+
+            // Call the original placeOrder function
+            // return this._super(data, event);
+        },
+
+        getBrowserData: function () {
+            return {
+                httpBrowserJavaEnabled: navigator.javaEnabled(),
+                httpBrowserJavaScriptEnabled: true,
+                httpBrowserColorDepth: screen.colorDepth,
+                httpBrowserScreenHeight: screen.height,
+                httpBrowserScreenWidth: screen.width,
+                httpBrowserTimeDifference: new Date().getTimezoneOffset(),
+                httpBrowserLanguage: navigator.language,
+                userAgentBrowserValue: navigator.userAgent
             }
         }
     });
