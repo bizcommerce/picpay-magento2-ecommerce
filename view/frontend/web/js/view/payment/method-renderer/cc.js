@@ -290,22 +290,6 @@ define([
             } else {
                 return this._super(data, event);
             }
-
-
-            // @todo Verifica se deve usar 3DS
-            // @todo Chama a criação de sessão
-            // @todo Verifica se tem challenge, se tiver, exibe para o usuário
-
-
-
-            // Add custom logic before the order is placed
-            alert('placeOrder')
-
-            // Custom logic: for example, validating specific fields or sending data to an external service
-            console.log("Custom placeOrder logic executed");
-
-            // Call the original placeOrder function
-            // return this._super(data, event);
         },
 
         getBrowserData: function () {
