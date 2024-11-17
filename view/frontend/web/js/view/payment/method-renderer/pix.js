@@ -19,25 +19,41 @@
  */
 define(
     [
+        'jquery',
+        'ko',
         'Magento_Checkout/js/view/payment/default',
-        'mage/url'
+        'Magento_Customer/js/model/customer'
     ],
-    function (Component, url) {
+    function ($, ko, Component, customer) {
         'use strict';
 
         return Component.extend({
             defaults: {
-                template: 'PicPay_Checkout/payment/form/pix'
+                template: 'PicPay_Checkout/payment/form/pix',
             },
+
+            taxvat: ko.observable(),
 
             getCode: function() {
                 return 'picpay_checkout_pix';
             },
 
+            validate: function () {
+                const $form = $('#' + 'form_' + this.getCode());
+                return ($form.validation() && $form.validation('isValid'));
+            },
+
             getData: function() {
                 return {
-                    'method': this.item.method
+                    'method': this.item.method,
+                    'additional_data': {
+                        'taxvat': this.taxvat()
+                    }
                 };
+            },
+
+            isLoggedIn: function () {
+                return customer.isLoggedIn();
             },
 
             hasInstructions: function () {

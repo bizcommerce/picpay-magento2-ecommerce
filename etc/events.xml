@@ -19,6 +19,14 @@
         <observer name="picpay_checkout_cc_credit_card_assign" instance="PicPay\Checkout\Observer\CreditCardAssignObserver"/>
     </event>
 
+    <event name="payment_method_assign_data_picpay_checkout_pix">
+        <observer name="picpay_checkout_cc_data_assign" instance="PicPay\Checkout\Observer\DataAssignObserver"/>
+    </event>
+
+    <event name="payment_method_assign_data_picpay_checkout_wallet">
+        <observer name="picpay_checkout_cc_data_assign" instance="PicPay\Checkout\Observer\DataAssignObserver"/>
+    </event>
+
     <event name="payment_method_is_active">
         <observer name="picpay_checkout_payment_payment_method_is_active" instance="PicPay\Checkout\Observer\PaymentMethodIsActive" />
     </event>

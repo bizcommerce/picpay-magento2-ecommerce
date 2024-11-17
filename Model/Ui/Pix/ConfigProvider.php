@@ -73,12 +73,16 @@ class ConfigProvider extends CcGenericConfigProvider
      */
     public function getConfig()
     {
+        $customer = $this->customerSession->getCustomer();
+        $customerTaxvat = ($customer && $customer->getTaxvat()) ? $customer->getTaxvat() : '';
+
         return [
             'payment' => [
                 self::CODE => [
                     'grand_total' => $this->checkoutSession->getQuote()->getGrandTotal(),
                     'sandbox' => (int) $this->helper->getGeneralConfig('use_sandbox'),
-                    'checkout_instructions' => $this->helper->getConfig('checkout_instructions', self::CODE)
+                    'checkout_instructions' => $this->helper->getConfig('checkout_instructions', self::CODE),
+                    'customer_taxvat' => $customerTaxvat,
                 ]
             ]
         ];
