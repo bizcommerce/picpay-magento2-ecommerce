@@ -14,6 +14,7 @@
 
 namespace PicPay\Checkout\Helper;
 
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\HTTP\Header;
@@ -122,6 +123,9 @@ class Data extends \Magento\Payment\Helper\Data
     /** @var SessionManager */
     protected $sessionManager;
 
+    /** @var ResourceConnection */
+    protected $resourceConnection;
+
     public function __construct(
         Context $context,
         LayoutFactory $layoutFactory,
@@ -141,6 +145,7 @@ class Data extends \Magento\Payment\Helper\Data
         OrderInterface $order,
         Header $httpHeader,
         SessionManager $sessionManager,
+        ResourceConnection $resourceConnection,
         ComponentRegistrar $componentRegistrar,
         DateTime $dateTime,
         DirectoryData $helperDirectory,
@@ -168,6 +173,7 @@ class Data extends \Magento\Payment\Helper\Data
         $this->order = $order;
         $this->httpHeader = $httpHeader;
         $this->sessionManager = $sessionManager;
+        $this->resourceConnection = $resourceConnection;
         $this->componentRegistrar = $componentRegistrar;
         $this->dateTime = $dateTime;
         $this->helperDirectory = $helperDirectory;
@@ -311,6 +317,7 @@ class Data extends \Magento\Payment\Helper\Data
                 $request = $this->serializeAndMask($request);
                 $response = $this->serializeAndMask($response);
 
+                $connection = $this->resourceConnection->getConnection();
                 $requestModel = $this->requestFactory->create();
                 $requestModel->setRequest($request);
                 $requestModel->setResponse($response);
@@ -318,6 +325,7 @@ class Data extends \Magento\Payment\Helper\Data
                 $requestModel->setStatusCode($statusCode);
 
                 $this->requestRepository->save($requestModel);
+                $connection->commit();
             } catch (\Exception $e) {
                 $this->log($e->getMessage());
             }
