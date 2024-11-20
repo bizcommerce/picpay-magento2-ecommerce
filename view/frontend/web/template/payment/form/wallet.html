@@ -41,6 +41,30 @@
                 </dd>
             </dl>
 
+            <!-- ko if: (!isLoggedIn())-->
+                <div class="field number required" data-bind="attr: {id: getCode() + '_customer_taxvat'}">
+                    <label data-bind="attr: {for: getCode() + '_taxvat'}" class="label">
+                        <span><!-- ko i18n: 'Taxvat' --><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text"
+                               name="payment[taxvat]"
+                               class="input-text-picpay cpf"
+                               value=""
+                               data-bind="attr: {
+                                                    id: getCode() + '_taxvat',
+                                                    title: $t('Customer Taxvat'),
+                                                    maxlength: 14,
+                                                    minlength: 11,
+                                                    'data-container': getCode() + '-taxvat',
+                                                    'data-validate': JSON.stringify({'required':true, 'required-number':true})
+                                                  },
+                                                  value: taxvat,
+                                                  valueUpdate: 'keyup' "/>
+                    </div>
+                </div>
+            <!-- /ko -->
+
             <!-- ko foreach: getRegion('messages') -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->

@@ -32,31 +32,57 @@
     </div>
 
     <div data-bind="attr: {class: 'payment-method-content container-' + getCode()}">
-        <fieldset data-bind="attr: {class: 'fieldset payment items ' + getCode(), id: 'payment_form_' + getCode()}">
-            <dl class="picpay-pix-instructions">
-                <dd class="content">
-                    <!-- ko if: (hasInstructions())-->
-                    <div class="instructions pix" data-bind="html: getInstructions()"></div>
-                    <!-- /ko -->
-                </dd>
-            </dl>
+        <form data-bind="attr: {id: 'form_' + getCode()}">
+            <fieldset data-bind="attr: {class: 'fieldset payment items ' + getCode(), id: 'payment_form_' + getCode()}">
+                <dl class="picpay-pix-instructions">
+                    <dd class="content">
+                        <!-- ko if: (hasInstructions())-->
+                        <div class="instructions pix" data-bind="html: getInstructions()"></div>
+                        <!-- /ko -->
+                    </dd>
+                </dl>
 
-            <!-- ko foreach: getRegion('messages') -->
-            <!-- ko template: getTemplate() --><!-- /ko -->
-            <!--/ko-->
+                <!-- ko if: (!isLoggedIn())-->
+                    <div class="field number required" data-bind="attr: {id: getCode() + '_customer_taxvat'}">
+                        <label data-bind="attr: {for: getCode() + '_taxvat'}" class="label">
+                            <span><!-- ko i18n: 'Taxvat' --><!-- /ko --></span>
+                        </label>
+                        <div class="control">
+                            <input type="text"
+                                   name="payment[taxvat]"
+                                   class="input-text-picpay cpf"
+                                   value=""
+                                   data-bind="attr: {
+                                                id: getCode() + '_taxvat',
+                                                title: $t('Customer Taxvat'),
+                                                maxlength: 14,
+                                                minlength: 11,
+                                                'data-container': getCode() + '-taxvat',
+                                                'data-validate': JSON.stringify({'required':true, 'required-number':true})
+                                              },
+                                              value: taxvat,
+                                              valueUpdate: 'keyup' "/>
+                        </div>
+                    </div>
+                <!-- /ko -->
 
-            <div class="payment-method-billing-address">
-                <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+                <!-- ko foreach: getRegion('messages') -->
                 <!-- ko template: getTemplate() --><!-- /ko -->
                 <!--/ko-->
-            </div>
 
-            <div class="checkout-agreements-block">
-                <!-- ko foreach: $parent.getRegion('before-place-order') -->
-                <!-- ko template: getTemplate() --><!-- /ko -->
-                <!--/ko-->
-            </div>
-        </fieldset>
+                <div class="payment-method-billing-address">
+                    <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+
+                <div class="checkout-agreements-block">
+                    <!-- ko foreach: $parent.getRegion('before-place-order') -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+            </fieldset>
+        </form>
 
         <div class="actions-toolbar">
             <div class="primary">
