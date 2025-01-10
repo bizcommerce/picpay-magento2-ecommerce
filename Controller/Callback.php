@@ -4,6 +4,7 @@ namespace PicPay\Checkout\Controller;
 
 use PicPay\Checkout\Helper\Data as HelperData;
 use PicPay\Checkout\Helper\Order as HelperOrder;
+use PicPay\Checkout\Helper\Tds as HelperTds;
 use PicPay\Checkout\Model\CallbackFactory;
 use PicPay\Checkout\Model\ResourceModel\Callback as CallbackResourceModel;
 use Magento\Framework\App\Action\Action;
@@ -32,6 +33,11 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
      * @var HelperOrder
      */
     protected $helperOrder;
+
+    /**
+     * @var HelperTds
+     */
+    protected $helperTds;
 
     /**
      * @var CallbackFactory
@@ -70,6 +76,7 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
         ResultFactory $resultFactory,
         HelperData $helperData,
         HelperOrder $helperOrder,
+        HelperTds $helperTds,
         CallbackFactory $callbackFactory,
         CallbackResourceModel $callbackResourceModel,
         ManagerInterface $eventManager,
@@ -78,6 +85,7 @@ abstract class Callback extends Action implements \Magento\Framework\App\CsrfAwa
         $this->resultFactory = $resultFactory;
         $this->helperData = $helperData;
         $this->helperOrder = $helperOrder;
+        $this->helperTds = $helperTds;
         $this->callbackFactory = $callbackFactory;
         $this->callbackResourceModel = $callbackResourceModel;
         $this->eventManager = $eventManager;

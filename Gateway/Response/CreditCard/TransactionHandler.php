@@ -73,11 +73,15 @@ class TransactionHandler extends PaymentsHandler implements HandlerInterface
         $payment = $this->helperOrder->updateDefaultAdditionalInfo($payment, $transaction);
         $payment = $this->helperOrder->updatePaymentAdditionalInfo($payment, $transaction['transactions'], 'credit');
 
-        if ($transaction['chargeStatus'] == HelperOrder::STATUS_PRE_AUTHORIZED) {
+        if (
+            $transaction['chargeStatus'] == HelperOrder::STATUS_PRE_AUTHORIZED
+            || $transaction['chargeStatus'] == HelperOrder::STATUS_CHARGE_PRE_AUTHORIZED
+        ) {
             $payment->getOrder()->setState('new');
             $payment->setSkipOrderProcessing(true);
         }
 
-        $payment->getOrder()->setData('picpay_charge_id', $transaction['merchantChargeId']);
+        $merchantChargeId =  $transaction['merchantChargeId'] ?? $payment->getOrder()->getPicpayMerchantId();
+        $payment->getOrder()->setData('picpay_charge_id', $merchantChargeId);
     }
 }

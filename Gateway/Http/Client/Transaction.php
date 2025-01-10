@@ -71,7 +71,12 @@ class Transaction implements ClientInterface
                 break;
 
             default:
-                $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
+                if ($config['use_tds']) {
+                    $transaction = $this->api->tds()->authorization($requestBody);
+                    $transaction['response'] = $transaction['response']['charge'] ?? $transaction['response'];
+                } else {
+                    $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
+                }
         }
 
         $this->api->logResponse($transaction, self::LOG_NAME);

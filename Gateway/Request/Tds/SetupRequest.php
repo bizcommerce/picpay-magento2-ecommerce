@@ -25,8 +25,6 @@ class SetupRequest extends TdsRequest implements BuilderInterface
             throw new \InvalidArgumentException('Payment data object should be provided');
         }
 
-        /** @var Payment $payment */
-        $payment = $buildSubject['payment'];
         $quote = $buildSubject['quote'];
         $request = $this->getSetupTransactions($quote, $buildSubject['amount']);
         return ['request' => $request, 'client_config' => ['store_id' => $quote->getStoreId()]];
@@ -43,23 +41,18 @@ class SetupRequest extends TdsRequest implements BuilderInterface
     /**
      * @param Quote $quote
      * @param float $orderAmount
-     * @return array
+     * @return array[]
+     * @throws \Exception
      */
     protected function getTdsTransactionInfo(Quote $quote, float $orderAmount): array
     {
         $cardData = $this->getCardData($quote);
-        $response = $this->api->card()->execute($cardData);
 
-        if (isset($response['response']) && isset($response['response']['cardId'])) {
-            $cardData['cardId'] = $response['response']['cardId'];
-        }
-        $test['cardId'] = $cardData['cardId'];
-        $test['billingAddress'] = $cardData['billingAddress'];
-
+        unset($cardData['cardType']);
         $transactionInfo = [
             'amount' => $orderAmount * 100,
             'paymentType' => 'CREDIT',
-            'card' => $test
+            'card' => $cardData
         ];
         return [$transactionInfo];
     }

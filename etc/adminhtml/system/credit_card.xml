@@ -225,10 +225,10 @@
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 <config_path>payment/picpay_checkout_cc/tds_active</config_path>
             </field>
-            <field id="place_not_authorized_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="select">
-                <label>Place order if authorization fails</label>
+            <field id="place_not_authenticated_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="select">
+                <label>Place order if authentication fails</label>
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                <config_path>payment/picpay_checkout_cc/place_not_authorized_tds</config_path>
+                <config_path>payment/picpay_checkout_cc/place_not_authenticated_tds</config_path>
                 <depends>
                     <field id="tds_active">1</field>
                 </depends>

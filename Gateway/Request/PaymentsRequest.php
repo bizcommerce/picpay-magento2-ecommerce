@@ -21,6 +21,7 @@
 namespace PicPay\Checkout\Gateway\Request;
 
 use PicPay\Checkout\Gateway\Http\Client\Api;
+use PicPay\Checkout\Gateway\Request\Tds\AuthorizationRequest;
 use PicPay\Checkout\Helper\Data;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Event\ManagerInterface;
@@ -57,6 +58,10 @@ class PaymentsRequest
      */
     protected $date;
 
+    /**
+     * @var AuthorizationRequest
+     */
+    protected $authorizationRequest;
 
     /**
      * @var DateTime
@@ -92,7 +97,8 @@ class PaymentsRequest
         CustomerSession $customerSession,
         CategoryRepositoryInterface $categoryRepository,
         ProductRepositoryInterface $productRepository,
-        Api $api
+        Api $api,
+        AuthorizationRequest $authorizationRequest
     ) {
         $this->eventManager = $eventManager;
         $this->helper = $helper;
@@ -103,6 +109,7 @@ class PaymentsRequest
         $this->categoryRepository = $categoryRepository;
         $this->productRepository = $productRepository;
         $this->api = $api;
+        $this->authorizationRequest = $authorizationRequest;
     }
 
     protected function getTransactions(Order $order, float $amount): array

@@ -9,30 +9,24 @@ use PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider;
 
 class TdsRequest extends PaymentsRequest
 {
-    protected function getSetupTransactions(Quote $quote, float $amount): array
-    {
-        return [
-            'paymentSource' => 'GATEWAY',
-            'transactions' => $this->getTdsTransactionInfo($quote, $amount)
-        ];
-    }
-
+    /**
+     * @param Quote $quote
+     * @return array
+     */
     protected function getCardData(Quote $quote): array
     {
         $payment = $quote->getPayment();
-        $installments = (int) $payment->getAdditionalInformation('cc_installments') ?: 1;
         $taxvat = (string) $payment->getAdditionalInformation('picpay_customer_taxvat');
+
         return [
-            'cardType' => ConfigProvider::DEFAULT_TYPE,
+            'cardType' => 'CREDIT',
             'cardNumber' => $payment->getCcNumber(),
             'cvv' => $payment->getCcCid(),
-            'brand' => 'MASTERCARD',
+            'brand' => $this->getCardType($payment->getCcType()),
             'cardholderName' => $payment->getCcOwner(),
             'cardholderDocument' => $this->helper->digits($taxvat),
             'expirationMonth' => (int) $payment->getCcExpMonth(),
             'expirationYear' => (int) $payment->getCcExpYear(),
-            'installmentNumber' => $installments,
-            'installmentType' => $installments > 1 ? 'MERCHANT' : 'NONE',
             'billingAddress' => $this->getQuoteBillingAddress($quote)
         ];
     }
@@ -65,33 +59,27 @@ class TdsRequest extends PaymentsRequest
 
     /**
      * @param Quote $quote
-     * @param float $orderAmount
-     * @return array[]
-     * @throws \Exception
+     * @return string
      */
-    protected function getTdsTransactionInfo(Quote $quote, float $orderAmount): array
-    {
-        $cardData = $this->getCardData($quote);
-        $response = $this->api->card()->execute($cardData);
-
-        if (isset($response['response']) && isset($response['response']['cardId'])) {
-            $cardData['cardId'] = $response['response']['cardId'];
-        }
-        $test['cardId'] = $cardData['cardId'];
-        $test['billingAddress'] = $cardData['billingAddress'];
-
-        $transactionInfo = [
-            'amount' => $orderAmount * 100,
-            'paymentType' => 'CREDIT',
-            'card' => $test
-        ];
-        return [$transactionInfo];
-    }
-
     protected function getCustomerFullName(Quote $quote): string
     {
         $firstName = $quote->getCustomerFirstname();
         $lastName = $quote->getCustomerLastname();
         return $firstName . ' ' . $lastName;
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    protected function getCardType($type)
+    {
+        $types = [
+            'MC' => 'MASTERCARD',
+            'VI' => 'VISA',
+            'ELO' => 'ELO',
+        ];
+
+        return $types[$type] ?? '';
     }
 }

@@ -21,6 +21,18 @@
             <field name="base_picpay_interest_amount">
                 <aspect name="to_order" />
             </field>
+            <field name="picpay_charge_id">
+                <aspect name="to_order" />
+            </field>
+            <field name="picpay_merchant_id">
+                <aspect name="to_order" />
+            </field>
+            <field name="picpay_cardholder_auth_id">
+                <aspect name="to_order" />
+            </field>
+            <field name="picpay_challenge_status">
+                <aspect name="to_order" />
+            </field>
         </fieldset>
 
         <fieldset id="sales_convert_order">

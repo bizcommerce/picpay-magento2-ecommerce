@@ -71,7 +71,7 @@ class RefundRequest implements BuilderInterface
         ];
 
         $clientConfig = [
-            'order_id' => $payment->getAdditionalInformation('merchantChargeId'),
+            'order_id' => $payment->getAdditionalInformation('merchantChargeId') ?? $order->getPicpayMerchantId(),
             'store_id' => $order->getStoreId()
         ];
 

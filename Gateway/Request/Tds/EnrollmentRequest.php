@@ -5,8 +5,6 @@ namespace PicPay\Checkout\Gateway\Request\Tds;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Payment;
-use PicPay\Checkout\Gateway\Request\PaymentsRequest;
-use PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider;
 
 class EnrollmentRequest extends TdsRequest implements BuilderInterface
 {
@@ -26,22 +24,32 @@ class EnrollmentRequest extends TdsRequest implements BuilderInterface
 
         /** @var Payment $payment */
         $payment = $buildSubject['payment'];
+
         $quote = $buildSubject['quote'];
-        $request = $this->getEnrollmentTransactions($quote, $buildSubject['chargeId'], $buildSubject['amount']);
+        $request = $this->getEnrollmentTransactions($quote, $buildSubject, $payment->getAdditionalData());
         return ['request' => $request, 'client_config' => ['store_id' => $quote->getStoreId()]];
     }
 
-    protected function getEnrollmentTransactions(Quote $quote, string $chargeId, float $amount): array
+    /**
+     * @param Quote $quote
+     * @param $paymentData
+     * @param $additionalData
+     * @return array
+     */
+    protected function getEnrollmentTransactions(Quote $quote, $paymentData, $additionalData): array
     {
         return [
-            'chargeId' => $chargeId,
+            'chargeId' => $paymentData['chargeId'],
             'customer' => $this->getTdsCustomerData($quote),
-            'browser' => $this->getBrowserData(),
-            'transactions' => $this->getTdsTransactionInfo($quote, $amount),
-            'shipping' => $this->getShipping($quote)
+            'browser' => $this->getBrowserData($additionalData['browser_data']),
+            'transactions' => $this->getTdsTransactionInfo($quote, $paymentData['amount'])
         ];
     }
 
+    /**
+     * @param Quote $quote
+     * @return array
+     */
     protected function getTdsCustomerData(Quote $quote): array
     {
         $payment = $quote->getPayment();
@@ -57,7 +65,6 @@ class EnrollmentRequest extends TdsRequest implements BuilderInterface
             'documentType' => $this->getDocumentType($taxvat),
             'document' => $taxvat,
             'phone' => $phoneNumber,
-//            'threeDomainSecureSettings' => $this->getTdsSecureSettings()
         ];
 
         if ($quote->getCustomerDob()) {
@@ -67,19 +74,17 @@ class EnrollmentRequest extends TdsRequest implements BuilderInterface
         return $customerData;
     }
 
-    protected function getBrowserData()
+    /**
+     * @param $data
+     * @return array
+     */
+    protected function getBrowserData($data)
     {
-        return [
+        $browserData = [
             'httpAcceptBrowserValue' => $_SERVER['HTTP_ACCEPT'] ,
             'httpAcceptContent' => $_SERVER['HTTP_ACCEPT'] ,
-            'httpBrowserLanguage' => '',
-            'httpBrowserJavaEnabled' => '',
-            'httpBrowserJavaScriptEnabled' => '',
-            'httpBrowserColorDepth' => '',
-            'httpBrowserScreenHeight' => '',
-            'httpBrowserTimeDifference' => '',
-            'userAgentBrowserValue' => '',
         ];
+        return array_merge($browserData, $data);
     }
 
     /**
@@ -90,18 +95,14 @@ class EnrollmentRequest extends TdsRequest implements BuilderInterface
     protected function getTdsTransactionInfo(Quote $quote, float $orderAmount): array
     {
         $cardData = $this->getCardData($quote);
-        $response = $this->api->card()->execute($cardData);
+        unset($cardData['cardType']);
 
-        if (isset($response['response']) && isset($response['response']['cardId'])) {
-            $cardData['cardId'] = $response['response']['cardId'];
-        }
-        $test['cardId'] = $cardData['cardId'];
-        $test['billingAddress'] = $cardData['billingAddress'];
+        $cardData['number'] = $cardData['cardNumber'];
+        unset($cardData['cardNumber']);
 
         $transactionInfo = [
             'amount' => $orderAmount * 100,
-            'paymentType' => 'CREDIT',
-            'card' => $test
+            'card' => $cardData
         ];
         return [$transactionInfo];
     }

@@ -2,17 +2,24 @@
 
 namespace PicPay\Checkout\Gateway\Request\CreditCard;
 
+use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
+use PicPay\Checkout\Gateway\Http\Client\Api;
 use PicPay\Checkout\Gateway\Request\PaymentsRequest;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use PicPay\Checkout\Helper\Data;
 use PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider;
 
 class TransactionRequest extends PaymentsRequest implements BuilderInterface
 {
-
     /**
      * Builds ENV request
      *
@@ -32,10 +39,18 @@ class TransactionRequest extends PaymentsRequest implements BuilderInterface
         $payment = $buildSubject['payment']->getPayment();
         $order = $payment->getOrder();
 
-        $this->validateCard($order, $payment);
-        $request = $this->getTransactions($order, $buildSubject['amount']);
+        if ($payment->getAdditionalInformation('use_tds_authorization')) {
+            $request = $this->authorizationRequest->getRequest($order);
+        } else {
+            $this->validateCard($order, $payment);
+            $request = $this->getTransactions($order, $buildSubject['amount']);
+        }
 
-        return ['request' => $request, 'client_config' => ['store_id' => $order->getStoreId()]];
+        $clientConfig = [
+            'store_id' => $order->getStoreId(),
+            'use_tds' => $payment->getAdditionalInformation('use_tds_authorization')
+        ];
+        return ['request' => $request, 'client_config' => $clientConfig];
     }
 
     /**

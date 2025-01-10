@@ -88,7 +88,12 @@ class CreditCardAssignObserver extends AbstractDataAssignObserver
                 'cc_exp_year' => $ccExpYear
             ]);
 
-            $extraInfo = ['installments' => $installments, 'cc_installments' => $installments, 'cc_bin' => $ccBin];
+            $extraInfo = [
+                'installments' => $installments,
+                'cc_installments' => $installments,
+                'cc_bin' => $ccBin,
+                'use_tds_authorization' => $additionalData['use_tds_authorization'] ?? 0,
+            ];
             foreach ($extraInfo as $key => $value) {
                 $paymentInfo->setAdditionalInformation($key, $value);
             }

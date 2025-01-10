@@ -28,6 +28,8 @@ define([
     'Magento_Customer/js/model/customer',
     'Magento_Payment/js/view/payment/cc-form',
     'mage/url',
+    'PicPay_Checkout/js/credit-card/tds',
+    'Magento_Checkout/js/model/full-screen-loader',
     'PicPay_Checkout/js/model/credit-card-validation/credit-card-number-validator',
     'Magento_Payment/js/model/credit-card-validation/credit-card-data',
     'picpay-cc-form',
@@ -46,6 +48,8 @@ define([
     customer,
     Component,
     urlBuilder,
+    Tds,
+    FullScreenLoader,
     cardNumberValidator,
     creditCardData,
     creditCardForm
@@ -63,9 +67,11 @@ define([
             showCardData: ko.observable(true),
             installments: ko.observableArray([]),
             hasInstallments: ko.observable(false),
+            useTdsAuthorization: ko.observable(false),
             installmentsUrl: '',
             showInstallmentsWarning: ko.observable(true),
-            debounceTimer: null
+            debounceTimer: null,
+            tds: ''
         },
 
         /** @inheritdoc */
@@ -131,6 +137,14 @@ define([
             return this;
         },
 
+        initialize: function () {
+            this._super();
+
+            this.tds = new Tds();
+
+            return this;
+        },
+
         loadCard: function () {
             let ccName = document.getElementById(this.getCode() + '_cc_owner');
             let ccNumber = document.getElementById(this.getCode() + '_cc_number');
@@ -152,7 +166,6 @@ define([
          * @returns {Object}
          */
         getData: function () {
-
             let ccExpMonth = '';
             let ccExpYear = '';
             let ccExpDate = this.creditCardExpDate();
@@ -172,7 +185,8 @@ define([
                     'cc_exp_year': ccExpYear.length === 4 ? ccExpYear : '20' + ccExpYear,
                     'cc_number': this.picpayCreditCardNumber(),
                     'cc_owner': this.creditCardOwner(),
-                    'installments': this.creditCardInstallments()
+                    'installments': this.creditCardInstallments(),
+                    'use_tds_authorization': this.useTdsAuthorization()
                 }
             };
         },
@@ -257,51 +271,43 @@ define([
             }
         },
 
-        canUseTds: function () {
+        isTdsActive: function () {
             return window.checkoutConfig.payment[this.getCode()].use_tds;
         },
 
-        placeNotAuthorizedOrder: function () {
-            return window.checkoutConfig.payment[this.getCode()].place_not_authorized_order;
+        canUseTds: function () {
+            let allowedCardTypes = ['VI', 'MC', 'ELO'];
+            return window.checkoutConfig.payment[this.getCode()].use_tds &&
+                allowedCardTypes.includes(this.creditCardType());
+        },
+
+        renderTdsModal: function () {
+            this.tds.initTdsModal();
+        },
+
+        canPlaceNotAuthorizedOrder: function() {
+            return window.checkoutConfig.payment[this.getCode()].place_not_authenticated_order;
+        },
+
+        placeOrderContinue: function(data, event, _super) {
+            _super(data, event);
         },
 
         placeOrder: function (data, event) {
+            var _super = this._super.bind(this);
+            FullScreenLoader.startLoader();
             if (event) {
                 event.preventDefault();
             }
 
-            let formData = this.getData();
-            formData.additional_data.browser_data = this.getBrowserData();
             if (this.canUseTds()) {
-                $.ajax({
-                    url: urlBuilder.build('picpay_checkout/tds/enrollment'),
-                    global: true,
-                    data: JSON.stringify(this.getData()),
-                    contentType: 'application/json',
-                    type: 'POST',
-                    async: true
-                }).done(function (data) {
-                    alert('success')
-                    console.log(data)
-                }).fail(function (response) {
-                    alert('fail')
-                    console.log(response)
+                this.useTdsAuthorization(true);
+                this.tds.runTds(this.getData(), () => {
+                    this.placeOrderContinue(data, event, _super);
                 });
             } else {
+                this.useTdsAuthorization(false);
                 return this._super(data, event);
-            }
-        },
-
-        getBrowserData: function () {
-            return {
-                httpBrowserJavaEnabled: navigator.javaEnabled(),
-                httpBrowserJavaScriptEnabled: true,
-                httpBrowserColorDepth: screen.colorDepth,
-                httpBrowserScreenHeight: screen.height,
-                httpBrowserScreenWidth: screen.width,
-                httpBrowserTimeDifference: new Date().getTimezoneOffset(),
-                httpBrowserLanguage: navigator.language,
-                userAgentBrowserValue: navigator.userAgent
             }
         }
     });
