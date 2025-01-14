@@ -62,7 +62,7 @@ define([
 
         checkPaymentStatus: function () {
             let source = new EventSource(
-                urlBuilder.build('picpay_checkout/payment/status?' + 'expiration_time=' + this.expiration_time())
+                urlBuilder.build('picpay_checkout/payment/status?' + 'order_id=' + this.expiration_time())
             );
             let self = this;
             source.onmessage = function(event) {

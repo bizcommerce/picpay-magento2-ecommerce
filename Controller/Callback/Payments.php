@@ -11,11 +11,7 @@ namespace PicPay\Checkout\Controller\Callback;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use PicPay\Checkout\Controller\Callback;
-use PicPay\Checkout\Gateway\Http\Client\Api;
-use PicPay\Checkout\Helper\Order;
 use Laminas\Http\Response;
-use PicPay\Checkout\Helper\Order as HelperOrder;
-use Magento\Sales\Model\Order as SalesOrder;
 
 class Payments extends Callback
 {
@@ -47,13 +43,18 @@ class Payments extends Callback
         $orderIncrementId = '';
 
         try {
-            $content = $this->getContent($this->getRequest());
-            $this->logParams($content);
+            $webhookData = $this->getContent($this->getRequest());
+            $this->logParams($webhookData);
             $method = 'picpay-payments';
+            $content = isset($webhookData['type']) ? $webhookData['data'] : $webhookData;
 
-            $content = isset($content['type']) ? $content['data'] : $content;
-
-            if (isset($content['status'])) {
+            if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE') {
+                $quote = $this->helperTds->loadQuoteByChargeId($content['chargeId']);
+                if ($quote->getId()) {
+                    $this->helperTds->updateQuote($quote, $content);
+                    $statusCode = Response::STATUS_CODE_200;
+                }
+            } else if (isset($content['status'])) {
                 $chargeId = $content['merchantChargeId'];
                 if (isset($content['status'])) {
                     $picpayStatus = $content['status'];

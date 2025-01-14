@@ -230,6 +230,13 @@
         </arguments>
     </virtualType>
 
+    <!-- Transaction Request -->
+    <type name="PicPay\Checkout\Gateway\Request\Tds\TdsRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">PicPayCreditCardConfig</argument>
+        </arguments>
+    </type>
+
     <virtualType name="PicPayPixTransactionRequest" type="PicPay\Checkout\Gateway\Request\Pix\TransactionRequest">
         <arguments>
             <argument name="config" xsi:type="object">PicPayPixConfig</argument>

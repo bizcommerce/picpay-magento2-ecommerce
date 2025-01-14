@@ -9,17 +9,11 @@
 
 namespace PicPay\Checkout\Helper;
 
-use BaconQrCode\Renderer\ImageRenderer as QrCodeImageRenderer;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd as QrCodeImagickImageBackEnd;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle as QrCodeRendererStyle;
-use BaconQrCode\Writer as QrCodeWritter;
 use Magento\Framework\Exception\LocalizedException;
 use PicPay\Checkout\Helper\Data as HelperData;
 use PicPay\Checkout\Gateway\Http\Client;
 use PicPay\Checkout\Gateway\Http\Client\Api;
-use PicPay\Checkout\Model\Ui\CreditCard\ConfigProvider as CcConfigProvider;
 use Magento\Framework\App\Config\Initial;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Stdlib\DateTime\DateTime;
@@ -45,6 +39,8 @@ class Order extends \Magento\Payment\Helper\Data
 
     public const STATUS_PRE_AUTHORIZED = 'PRE_AUTHORIZED';
 
+    public const STATUS_CHARGE_PRE_AUTHORIZED = 'PreAuthorized';
+
     public const STATUS_PARTIAL = 'PARTIAL';
 
     public const STATUS_ERROR = 'ERROR';
@@ -65,7 +61,7 @@ class Order extends \Magento\Payment\Helper\Data
     protected $orderFactory;
 
     /**
-     * @var OrderFactory
+     * @var OrderRepository
      */
     protected $orderRepository;
 
@@ -116,7 +112,6 @@ class Order extends \Magento\Payment\Helper\Data
     protected $dateTime;
 
     /**
-     * Order constructor.
      * @param Context $context
      * @param LayoutFactory $layoutFactory
      * @param Factory $paymentMethodFactory
@@ -428,6 +423,10 @@ class Order extends \Magento\Payment\Helper\Data
         return '';
     }
 
+    /**
+     * @param string $chargeId
+     * @return SalesOrder
+     */
     public function loadOrderByMerchantChargeId(string $chargeId): SalesOrder
     {
         $order = $this->orderFactory->create();

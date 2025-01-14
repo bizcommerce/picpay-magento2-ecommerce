@@ -44,7 +44,10 @@ class PaymentsHandler
         }
 
         $transaction = $response['transaction'];
-        if (!isset($transaction['merchantChargeId']) || !isset($transaction['chargeStatus'])) {
+        if (
+            (!isset($transaction['merchantChargeId']) && !isset($transaction['id']))
+            || !isset($transaction['chargeStatus'])
+        ) {
             throw new LocalizedException(__('There was an error processing your request.'));
         }
         return array($handlingSubject['payment'], $transaction);

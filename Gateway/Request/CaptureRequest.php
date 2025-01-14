@@ -45,7 +45,7 @@ class CaptureRequest implements BuilderInterface
         ];
 
         $clientConfig = [
-            'order_id' => $payment->getAdditionalInformation('merchantChargeId'),
+            'order_id' => $payment->getAdditionalInformation('merchantChargeId') ?? $order->getPicpayMerchantId(),
             'status' => $payment->getAdditionalInformation('status'),
             'store_id' => $order->getStoreId()
         ];

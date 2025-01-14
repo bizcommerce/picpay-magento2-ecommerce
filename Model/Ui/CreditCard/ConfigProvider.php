@@ -86,7 +86,9 @@ class ConfigProvider extends CcGenericConfigProvider
                     'customer_taxvat' => $customerTaxvat,
                     'sandbox' => (int) $this->helper->getGeneralConfig('use_sandbox'),
                     'icons' => $this->getPaymentIcons(),
-                    'availableTypes' => $this->getCcAvailableTypes($methodCode)
+                    'availableTypes' => $this->getCcAvailableTypes($methodCode),
+                    'use_tds' => (int) $this->canUseTds($grandTotal),
+                    'place_not_authenticated_order' => (int) $this->helper->getConfig('place_not_authenticated_order'),
                 ],
                 'ccform' => [
                     'grandTotal' => [$methodCode => $grandTotal],
@@ -102,6 +104,14 @@ class ConfigProvider extends CcGenericConfigProvider
                 ]
             ]
         ];
+    }
+
+    public function canUseTds($amount)
+    {
+        $isActive = $this->helper->getConfig('tds_active');
+        $minAmount = $this->helper->getConfig('min_tds_order_total');
+
+        return $isActive && $minAmount <= $amount;
     }
 
     /**

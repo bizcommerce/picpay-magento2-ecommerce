@@ -71,6 +71,8 @@
 
     <table name="sales_order">
         <column xsi:type="varchar" name="picpay_charge_id" length="255" nullable="true" comment="PicPay Charge ID"/>
+        <column xsi:type="varchar" name="picpay_merchant_id" length="255" nullable="true" comment="PicPay Merchant ID"/>
+        <column xsi:type="varchar" name="picpay_cardholder_auth_id" length="255" nullable="true" comment="PicPay Cardholder Auth ID"/>
         <column xsi:type="decimal" name="picpay_interest_amount" default="0" nullable="true" precision="12" scale="4" />
         <column xsi:type="decimal" name="base_picpay_interest_amount" default="0" nullable="true" precision="12" scale="4" />
     </table>
@@ -86,6 +88,10 @@
     </table>
 
     <table name="quote">
+        <column xsi:type="varchar" name="picpay_charge_id" length="255" nullable="true" comment="PicPay Charge ID"/>
+        <column xsi:type="varchar" name="picpay_merchant_id" length="255" nullable="true" comment="PicPay Merchant ID"/>
+        <column xsi:type="varchar" name="picpay_cardholder_auth_id" length="255" nullable="true" comment="PicPay Cardholder Auth ID"/>
+        <column xsi:type="varchar" name="picpay_challenge_status" length="255" nullable="true" comment="PicPay Challenge Status"/>
         <column xsi:type="decimal" name="picpay_interest_amount" default="0" nullable="true" precision="12" scale="4" />
         <column xsi:type="decimal" name="base_picpay_interest_amount" default="0" nullable="true" precision="12" scale="4" />
     </table>

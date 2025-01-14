@@ -217,5 +217,34 @@
             <config_path>payment/picpay_checkout_cc/max_order_total</config_path>
         </field>
 
+        <group id="picpay_checkout_cc_tds_settings" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="1200">
+            <label>3DS</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="tds_active" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                <label>Enabled</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <config_path>payment/picpay_checkout_cc/tds_active</config_path>
+            </field>
+            <field id="place_not_authenticated_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="select">
+                <label>Place order if authentication fails</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <config_path>payment/picpay_checkout_cc/place_not_authenticated_tds</config_path>
+                <depends>
+                    <field id="tds_active">1</field>
+                </depends>
+            </field>
+            <field id="min_tds_order_total" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label" type="text">
+                <validate>validate-number validate-zero-or-greater</validate>
+                <label>Order minimum amount to use 3DS</label>
+                <comment />
+                <config_path>payment/picpay_checkout_cc/min_tds_order_total</config_path>
+                <depends>
+                    <field id="tds_active">1</field>
+                </depends>
+            </field>
+            <depends>
+                <field id="active">1</field>
+            </depends>
+        </group>
     </group>
 </include>
