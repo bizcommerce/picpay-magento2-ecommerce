@@ -1,6 +1,6 @@
 {
     "name": "picpay/ecommerce-integration-magento2",
-    "version": "1.2.2",
+    "version": "1.3.2",
     "description": "N/A",
     "type": "magento2-module",
     "autoload": {

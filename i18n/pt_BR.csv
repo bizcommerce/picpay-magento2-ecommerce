@@ -132,3 +132,5 @@ Response,Resposta
 "Instructions to be shown in success page, it can be HTML","Instruções para ser mostrada na página de sucesso, pode ser HTML"
 "Payment received.", "Pagamento recebido."
 "We were unable to authenticate your transaction, please try again.", "Não foi possível autenticar sua transação. Por favor, tente novamente."
+"Place order if authentication fails", "Finalizar pedido mesmo que a autenticação falhe"
+"Order minimum amount to use 3DS", "Valor mínimo do pedido para usar 3DS"

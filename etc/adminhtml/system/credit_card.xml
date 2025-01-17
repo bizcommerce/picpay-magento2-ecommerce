@@ -217,7 +217,7 @@
             <config_path>payment/picpay_checkout_cc/max_order_total</config_path>
         </field>
 
-        <group id="picpay_checkout_cc_tds_settings" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="1200">
+        <group id="picpay_checkout_cc_tds_settings" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20200">
             <label>3DS</label>
             <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
             <field id="tds_active" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
