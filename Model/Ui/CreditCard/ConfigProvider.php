@@ -88,7 +88,7 @@ class ConfigProvider extends CcGenericConfigProvider
                     'icons' => $this->getPaymentIcons(),
                     'availableTypes' => $this->getCcAvailableTypes($methodCode),
                     'use_tds' => (int) $this->canUseTds($grandTotal),
-                    'place_not_authenticated_order' => (int) $this->helper->getConfig('place_not_authenticated_order'),
+                    'place_not_authenticated_order' => (int) $this->helper->getConfig('place_not_authenticated_tds'),
                 ],
                 'ccform' => [
                     'grandTotal' => [$methodCode => $grandTotal],

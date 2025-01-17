@@ -26,7 +26,8 @@ define([
     'mage/url',
     'Magento_Ui/js/modal/modal',
     'Magento_Checkout/js/model/full-screen-loader',
-    'Magento_Customer/js/customer-data'
+    'Magento_Customer/js/customer-data',
+    'Magento_Ui/js/model/messageList'
  ], function (
     _,
     ko,
@@ -35,7 +36,8 @@ define([
     urlBuilder,
     modal,
     fullScreenLoader,
-    customerData
+    customerData,
+    messageList
 ) {
     'use strict';
 
@@ -60,7 +62,10 @@ define([
                     self.checkChallengeStatus(placeOrderCallback)
                 } else if (data['cardholderAuthenticationStatus'] == 'Approved' && typeof placeOrderCallback === 'function') {
                     $('#picpay-tds-modal').modal('closeModal');
-                    placeOrderCallback(data['cardholderAuthenticationStatus']);
+                    self.placeOrder(placeOrderCallback, true);
+                } else if (data['cardholderAuthenticationStatus'] == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
+                    $('#picpay-tds-modal').modal('closeModal');
+                    self.placeOrder(placeOrderCallback, true);
                 } else {
                     $('#picpay-tds-modal').modal('closeModal');
                     self.displayErrorMessage($t('We were unable to authenticate your transaction, please try again.'));
@@ -119,15 +124,14 @@ define([
                     type: 'GET',
                     dataType: 'json',
                     success: function (response) {
-
                         if (response.error) {
-                            console.error(response.message);
+                            messageList.addSuccessMessage({'message': $t(response.error)});
                         } else if (response.challenge_status == 'Approved') {
                             clearInterval(challengeInterval);
-                            if (typeof placeOrderCallback === 'function') {
-                                placeOrderCallback(response.challenge_status); // Continue the checkout process
-                            }
-                            $('#picpay-tds-modal').modal('closeModal');
+                            self.placeOrder(placeOrderCallback, true);
+                        } else if (response.challenge_status == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
+                            clearInterval(challengeInterval);
+                            self.placeOrder(placeOrderCallback, false);
                         } else if (response.challenge_status == 'Rejected') {
                             $('#picpay-tds-modal').modal('closeModal');
                             self.displayErrorMessage($t('We were unable to authenticate your transaction, please try again.'));
@@ -143,13 +147,24 @@ define([
             }, 2000);
         }
 
+        placeOrder(placeOrderCallback, withTds) {
+            if (typeof placeOrderCallback === 'function') {
+                placeOrderCallback(withTds);
+            }
+            $('#picpay-tds-modal').modal('closeModal');
+        }
+
+        canPlaceNotAuthorizedOrder() {
+            return window.checkoutConfig.payment['picpay_checkout_cc'].place_not_authenticated_order;
+        }
+
         displayErrorMessage(message) {
+            messageList.addErrorMessage({'message': $t(message)});
             customerData.set('messages', {
                 messages: [
                     { text: message, type: 'error' }
                 ]
             });
-            customerData.reload(['messages']);
         }
     }
 });

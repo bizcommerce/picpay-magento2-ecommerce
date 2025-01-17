@@ -302,7 +302,11 @@ define([
 
             if (this.canUseTds()) {
                 this.useTdsAuthorization(true);
-                this.tds.runTds(this.getData(), () => {
+                this.tds.runTds(this.getData(), (placeOrderWithTds) => {
+                    if (!placeOrderWithTds) {
+                        this.useTdsAuthorization(false);
+                    }
+
                     this.placeOrderContinue(data, event, _super);
                 });
             } else {
