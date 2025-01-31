@@ -71,12 +71,7 @@ class Transaction implements ClientInterface
                 break;
 
             default:
-                if ($config['use_tds']) {
-                    $transaction = $this->api->tds()->authorization($requestBody);
-                    $transaction['response'] = $transaction['response']['charge'] ?? $transaction['response'];
-                } else {
-                    $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
-                }
+                $transaction = $this->executeCardTransaction($config, $requestBody);
         }
 
         $this->api->logResponse($transaction, self::LOG_NAME);
@@ -87,5 +82,23 @@ class Transaction implements ClientInterface
         $this->api->saveRequest($requestBody, $transaction['response'], $statusCode, $this->methodCode);
 
         return ['status' => $status, 'status_code' => $statusCode, 'transaction' => $transaction['response']];
+    }
+
+    /**
+     * @param $config
+     * @param $requestBody
+     * @return array
+     * @throws \Exception
+     */
+    protected function executeCardTransaction($config, $requestBody)
+    {
+        if ($config['use_tds']) {
+            $transaction = $this->api->tds()->authorization($requestBody);
+            $transaction['response'] = $transaction['response']['charge'] ?? $transaction['response'];
+        } else {
+            $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
+        }
+
+        return $transaction;
     }
 }

@@ -53,17 +53,14 @@ class Challenge extends Action implements HttpGetActionInterface, CsrfAwareActio
         $result = $this->resultJsonFactory->create();
 
         $quoteId = $this->checkoutSession->getQuoteId();
+        $quote = $this->quoteRepository->get($quoteId);
 
-        if ($quoteId) {
-            $quote = $this->quoteRepository->get($quoteId);
-
-            if ($quote->getPicpayChargeId()) {
-                $tdsChallengeStatus = $quote->getPicpayChallengeStatus();
-                return $result->setData([
-                    'challenge_status' => $tdsChallengeStatus,
-                    'charge_id' => $quote->getPicpayChargeId()
-                ]);
-            }
+        if ($quote->getPicpayChargeId()) {
+            $tdsChallengeStatus = $quote->getPicpayChallengeStatus();
+            return $result->setData([
+                'challenge_status' => $tdsChallengeStatus,
+                'charge_id' => $quote->getPicpayChargeId()
+            ]);
         }
 
         return $result->setData(['error' => true, 'message' => __('No orders found for this user.')]);

@@ -48,12 +48,12 @@ class Payments extends Callback
             $method = 'picpay-payments';
             $content = isset($webhookData['type']) ? $webhookData['data'] : $webhookData;
 
-            if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE') {
-                $quote = $this->helperTds->loadQuoteByChargeId($content['chargeId']);
-                if ($quote->getId()) {
-                    $this->helperTds->updateQuote($quote, $content);
-                    $statusCode = Response::STATUS_CODE_200;
-                }
+            $chargeId = $content['chargeId'] ?? $content['merchantChargeId'];
+            $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
+
+            if ($quote->getId()) {
+                $this->helperTds->updateQuote($quote, $content);
+                $statusCode = Response::STATUS_CODE_200;
             } else if (isset($content['status'])) {
                 $chargeId = $content['merchantChargeId'];
                 if (isset($content['status'])) {
