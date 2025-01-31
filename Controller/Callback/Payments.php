@@ -81,7 +81,7 @@ class Payments extends Callback
         return $result;
     }
 
-    public function processTds(array $webhookData, string $chargeId, string $content, int $statusCode): int
+    public function processTds(array $webhookData, string $chargeId, array $content, int $statusCode): int
     {
         $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
         if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE' && $quote->getId()) {
