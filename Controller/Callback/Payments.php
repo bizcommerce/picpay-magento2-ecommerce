@@ -51,23 +51,21 @@ class Payments extends Callback
             $chargeId = $content['chargeId'] ?? $content['merchantChargeId'];
             $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
 
-            if ($quote->getId()) {
+            if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE' && $quote->getId()) {
+                $quote = $this->helperTds->loadQuoteByChargeId($content['chargeId']);
                 $this->helperTds->updateQuote($quote, $content);
                 $statusCode = Response::STATUS_CODE_200;
             } else if (isset($content['status'])) {
-                $chargeId = $content['merchantChargeId'];
-                if (isset($content['status'])) {
-                    $picpayStatus = $content['status'];
-                    $order = $this->helperOrder->loadOrderByMerchantChargeId($chargeId);
-                    if ($order->getId()) {
-                        $orderIncrementId = $order->getIncrementId();
-                        $method = $order->getPayment()->getMethod();
-                        $amount = $content['amount'] ? $content['amount'] / 100 : $order->getGrandTotal();
-                        $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
+                $picpayStatus = $content['status'];
+                $order = $this->helperOrder->loadOrderByMerchantChargeId($chargeId);
+                if ($order->getId()) {
+                    $orderIncrementId = $order->getIncrementId();
+                    $method = $order->getPayment()->getMethod();
+                    $amount = $content['amount'] ? $content['amount'] / 100 : $order->getGrandTotal();
+                    $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
 
-                        $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true, $refundedAmount);
-                        $statusCode = Response::STATUS_CODE_200;
-                    }
+                    $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true, $refundedAmount);
+                    $statusCode = Response::STATUS_CODE_200;
                 }
             }
 
