@@ -15,6 +15,7 @@ use Laminas\Http\Response;
 
 class Payments extends Callback
 {
+    public const DEFAULT_STATUS_CODE = 500;
     /**
      * @var string
      */
@@ -39,7 +40,7 @@ class Payments extends Callback
         $this->helperData->log(__('Webhook %1', __CLASS__), self::LOG_NAME);
 
         $result = $this->resultFactory->create(ResultFactory::TYPE_RAW);
-        $statusCode = 500;
+        $statusCode = self::DEFAULT_STATUS_CODE;
         $orderIncrementId = '';
 
         try {
@@ -47,26 +48,21 @@ class Payments extends Callback
             $this->logParams($webhookData);
             $method = 'picpay-payments';
             $content = isset($webhookData['type']) ? $webhookData['data'] : $webhookData;
-
             $chargeId = $content['chargeId'] ?? $content['merchantChargeId'];
-            $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
 
-            if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE' && $quote->getId()) {
-                $quote = $this->helperTds->loadQuoteByChargeId($content['chargeId']);
-                $this->helperTds->updateQuote($quote, $content);
+            $statusCode = $this->processTds($webhookData, $chargeId, $content, $statusCode);
+            if (
+                isset($content['status'])
+                && $statusCode === self::DEFAULT_STATUS_CODE
+                && $order = $this->helperOrder->loadOrderByMerchantChargeId($chargeId)
+            ) {
+                $status = $content['status'];
+                $orderIncrementId = $order->getIncrementId();
+                $method = $order->getPayment()->getMethod();
+                $amount = $content['amount'] ? $content['amount'] / 100 : $order->getGrandTotal();
+                $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
+                $this->helperOrder->updateOrder($order, $status, $content, $amount, $method, true, $refundedAmount);
                 $statusCode = Response::STATUS_CODE_200;
-            } else if (isset($content['status'])) {
-                $picpayStatus = $content['status'];
-                $order = $this->helperOrder->loadOrderByMerchantChargeId($chargeId);
-                if ($order->getId()) {
-                    $orderIncrementId = $order->getIncrementId();
-                    $method = $order->getPayment()->getMethod();
-                    $amount = $content['amount'] ? $content['amount'] / 100 : $order->getGrandTotal();
-                    $refundedAmount = $content['refundedAmount'] ? $content['refundedAmount'] / 100 : 0;
-
-                    $this->helperOrder->updateOrder($order, $picpayStatus, $content, $amount, $method, true, $refundedAmount);
-                    $statusCode = Response::STATUS_CODE_200;
-                }
             }
 
             /** @var \PicPay\Checkout\Model\Callback $callBack */
@@ -77,11 +73,22 @@ class Payments extends Callback
             $callBack->setPayload($this->helperData->jsonEncode($content));
             $this->callbackResourceModel->save($callBack);
         } catch (\Exception $e) {
-            $statusCode = 500;
+            $statusCode = self::DEFAULT_STATUS_CODE;
             $this->helperData->getLogger()->error($e->getMessage());
         }
 
         $result->setHttpResponseCode($statusCode);
         return $result;
+    }
+
+    public function processTds(array $webhookData, string $chargeId, string $content, int $statusCode): int
+    {
+        $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
+        if (isset($webhookData['type']) && $webhookData['type'] == 'THREE_DS_CHALLENGE' && $quote->getId()) {
+            $quote = $this->helperTds->loadQuoteByChargeId($chargeId);
+            $this->helperTds->updateQuote($quote, $content);
+            $statusCode = Response::STATUS_CODE_200;
+        }
+        return $statusCode;
     }
 }

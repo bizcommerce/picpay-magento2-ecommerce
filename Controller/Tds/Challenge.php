@@ -38,8 +38,7 @@ class Challenge extends Action implements HttpGetActionInterface, CsrfAwareActio
         Json            $json,
         JsonFactory $resultJsonFactory,
         QuoteRepository $quoteRepository
-    )
-    {
+    ) {
         $this->checkoutSession = $checkoutSession;
         $this->json = $json;
         $this->resultJsonFactory = $resultJsonFactory;
@@ -50,17 +49,21 @@ class Challenge extends Action implements HttpGetActionInterface, CsrfAwareActio
 
     public function execute()
     {
-        $result = $this->resultJsonFactory->create();
+        try {
+            $result = $this->resultJsonFactory->create();
 
-        $quoteId = $this->checkoutSession->getQuoteId();
-        $quote = $this->quoteRepository->get($quoteId);
+            $quoteId = $this->checkoutSession->getQuoteId();
+            $quote = $this->quoteRepository->get($quoteId);
 
-        if ($quote->getPicpayChargeId()) {
-            $tdsChallengeStatus = $quote->getPicpayChallengeStatus();
-            return $result->setData([
-                'challenge_status' => $tdsChallengeStatus,
-                'charge_id' => $quote->getPicpayChargeId()
-            ]);
+            if ($quote->getPicpayChargeId()) {
+                $tdsChallengeStatus = $quote->getPicpayChallengeStatus();
+                return $result->setData([
+                    'challenge_status' => $tdsChallengeStatus,
+                    'charge_id' => $quote->getPicpayChargeId()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $result->setData(['error' => true, 'message' => $e->getMessage()]);
         }
 
         return $result->setData(['error' => true, 'message' => __('No orders found for this user.')]);

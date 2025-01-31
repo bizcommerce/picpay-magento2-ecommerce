@@ -90,15 +90,14 @@ class Transaction implements ClientInterface
      * @return array
      * @throws \Exception
      */
-    protected function executeCardTransaction($config, $requestBody)
+    protected function executeCardTransaction($config, $requestBody): array
     {
         if ($config['use_tds']) {
             $transaction = $this->api->tds()->authorization($requestBody);
             $transaction['response'] = $transaction['response']['charge'] ?? $transaction['response'];
-        } else {
-            $transaction = $this->api->create()->execute($requestBody, $config['store_id']);
+            return $transaction;
         }
 
-        return $transaction;
+        return $this->api->create()->execute($requestBody, $config['store_id']);
     }
 }

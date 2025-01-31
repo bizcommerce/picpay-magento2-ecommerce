@@ -89,18 +89,7 @@ class CheckoutTds
 
         if ($setup['response']['chargeId']) {
             $enrollment = $this->runEnrollment($setup['response']['chargeId'], $paymentData);
-
-            if (isset($enrollment['response']['chargeId']) && isset($enrollment['response']['transactions'][0])) {
-                $transaction = $enrollment['response']['transactions'][0];
-                $this->checkoutSession->setPicPayTdsChallengeStatus($transaction['cardholderAuthenticationStatus']);
-
-                $quote = $this->checkoutSession->getQuote();
-                $quote->setPicpayChargeId($enrollment['response']['chargeId']);
-                $quote->setPicpayChallengeStatus($transaction['cardholderAuthenticationStatus']);
-                $quote->setPicpayMerchantId($setup['response']['transactions'][0]['cardholderAuthenticationId']);
-                $quote->setPicpayCardholderAuthId($setup['response']['transactions'][0]['cardholderAuthenticationId']);
-                $this->quoteRepository->save($quote);
-            }
+            $this->processEnrollment($enrollment, $setup['response']['transactions'][0]['cardholderAuthenticationId']);
         }
 
         return $enrollment;
@@ -181,5 +170,27 @@ class CheckoutTds
         }
 
         throw new \Exception('Error trying to create 3DS setup on PicPay');
+    }
+
+    /**
+     * @param mixed $enrollment
+     * @param $cardholderAuthenticationId
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function processEnrollment($enrollment, $cardholderAuthenticationId): void
+    {
+        if (isset($enrollment['response']['chargeId']) && isset($enrollment['response']['transactions'][0])) {
+            $transaction = $enrollment['response']['transactions'][0];
+            $this->checkoutSession->setPicPayTdsChallengeStatus($transaction['cardholderAuthenticationStatus']);
+
+            $quote = $this->checkoutSession->getQuote();
+            $quote->setPicpayChargeId($enrollment['response']['chargeId']);
+            $quote->setPicpayChallengeStatus($transaction['cardholderAuthenticationStatus']);
+            $quote->setPicpayMerchantId($cardholderAuthenticationId);
+            $quote->setPicpayCardholderAuthId($cardholderAuthenticationId);
+            $this->quoteRepository->save($quote);
+        }
     }
 }

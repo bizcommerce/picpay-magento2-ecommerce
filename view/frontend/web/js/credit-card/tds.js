@@ -59,18 +59,23 @@ define([
                     $('#picpay-tds-step-up-form').submit();
                     $('#picpay-tds-modal').modal('openModal');
                     fullScreenLoader.stopLoader();
-                    self.checkChallengeStatus(placeOrderCallback)
-                } else if (data['cardholderAuthenticationStatus'] == 'Approved' && typeof placeOrderCallback === 'function') {
-                    $('#picpay-tds-modal').modal('closeModal');
-                    self.placeOrder(placeOrderCallback, true);
-                } else if (data['cardholderAuthenticationStatus'] == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
-                    $('#picpay-tds-modal').modal('closeModal');
-                    self.placeOrder(placeOrderCallback, true);
-                } else {
-                    $('#picpay-tds-modal').modal('closeModal');
-                    self.displayErrorMessage($t('We were unable to authenticate your transaction, please try again.'));
-                    fullScreenLoader.stopLoader();
+                    self.checkChallengeStatus(placeOrderCallback);
+                    return;
                 }
+
+                if (data['cardholderAuthenticationStatus'] == 'Approved') {
+                    self.placeOrder(placeOrderCallback, true);
+                    return;
+                }
+
+                if (data['cardholderAuthenticationStatus'] == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
+                    self.placeOrder(placeOrderCallback, false);
+                    return;
+                }
+
+                $('#picpay-tds-modal').modal('closeModal');
+                self.displayErrorMessage($t('We were unable to authenticate your transaction, please try again.'));
+                fullScreenLoader.stopLoader();
             });
         }
 
@@ -126,13 +131,22 @@ define([
                     success: function (response) {
                         if (response.error) {
                             messageList.addSuccessMessage({'message': $t(response.error)});
-                        } else if (response.challenge_status == 'Approved') {
+                            return;
+                        }
+
+                        if (response.challenge_status == 'Approved') {
                             clearInterval(challengeInterval);
                             self.placeOrder(placeOrderCallback, true);
-                        } else if (response.challenge_status == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
+                            return;
+                        }
+
+                        if (response.challenge_status == 'Rejected' && self.canPlaceNotAuthorizedOrder()) {
                             clearInterval(challengeInterval);
                             self.placeOrder(placeOrderCallback, false);
-                        } else if (response.challenge_status == 'Rejected') {
+                            return;
+                        }
+
+                        if (response.challenge_status == 'Rejected') {
                             $('#picpay-tds-modal').modal('closeModal');
                             self.displayErrorMessage($t('We were unable to authenticate your transaction, please try again.'));
                             clearInterval(challengeInterval);

@@ -425,15 +425,15 @@ class Order extends \Magento\Payment\Helper\Data
 
     /**
      * @param string $chargeId
-     * @return SalesOrder
+     * @return SalesOrder|false
      */
-    public function loadOrderByMerchantChargeId(string $chargeId): SalesOrder
+    public function loadOrderByMerchantChargeId(string $chargeId): SalesOrder|false
     {
         $order = $this->orderFactory->create();
         if ($chargeId) {
             $order->loadByAttribute('picpay_charge_id', $chargeId);
         }
-        return $order;
+        return $order->getId() ? $order : false;
     }
 
     /**

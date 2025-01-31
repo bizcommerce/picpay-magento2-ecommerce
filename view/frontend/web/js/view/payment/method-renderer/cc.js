@@ -303,16 +303,14 @@ define([
             if (this.canUseTds()) {
                 this.useTdsAuthorization(true);
                 this.tds.runTds(this.getData(), (placeOrderWithTds) => {
-                    if (!placeOrderWithTds) {
-                        this.useTdsAuthorization(false);
-                    }
-
+                    this.useTdsAuthorization(placeOrderWithTds);
                     this.placeOrderContinue(data, event, _super);
                 });
-            } else {
-                this.useTdsAuthorization(false);
-                return this._super(data, event);
+                return;
             }
+
+            this.useTdsAuthorization(false);
+            return this._super(data, event);
         }
     });
 });
