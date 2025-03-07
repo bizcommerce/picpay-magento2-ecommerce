@@ -79,7 +79,7 @@ class Client implements ClientInterface
     {
         return [
             'Content-Type' => 'application/json',
-            'caller-origin' => 'M2-v' . $this->helper->getModuleVersion()
+            'caller-origin' => 'Magento'
         ];
     }
 
