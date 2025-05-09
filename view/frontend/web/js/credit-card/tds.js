@@ -126,8 +126,11 @@ define([
             let challengeInterval = setInterval(function() {
                 $.ajax({
                     url: urlBuilder.build('picpay_checkout/tds/challenge'),
-                    type: 'GET',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({}),
                     dataType: 'json',
+                    async: true,
                     success: function (response) {
                         if (response.error) {
                             messageList.addSuccessMessage({'message': $t(response.error)});
@@ -158,7 +161,7 @@ define([
                         console.error('An error occurred while checking the order status.');
                     }
                 });
-            }, 2000);
+            }, 1500);
         }
 
         placeOrder(placeOrderCallback, withTds) {

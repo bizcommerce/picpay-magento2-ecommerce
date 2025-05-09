@@ -4,7 +4,7 @@ namespace PicPay\Checkout\Controller\Tds;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
@@ -14,7 +14,7 @@ use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Backend\App\Action\Context;
 use Magento\Quote\Model\QuoteRepository;
 
-class Challenge extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
+class Challenge extends Action implements HttpPostActionInterface, CsrfAwareActionInterface
 {
     /** @var Json */
     protected $json;
