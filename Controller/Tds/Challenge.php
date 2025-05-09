@@ -58,6 +58,10 @@ class Challenge extends Action implements HttpGetActionInterface, CsrfAwareActio
             if ($quote->getPicpayChargeId()) {
                 $tdsChallengeStatus = $quote->getPicpayChallengeStatus();
                 return $result->setData([
+                    'challenge_hash' => hash_hmac('sha256', $quote->getPicpayChargeId(), $quote->getId()),
+                    'challenge_customer_email' => $quote->getCustomerEmail(),
+                    'challenge_customer_name' => $quote->getCustomerFirstname() . ' ' . $quote->getCustomerLastname(),
+                    'challenge_customer_address' => $quote->getBillingAddress()->getStreet(),
                     'challenge_status' => $tdsChallengeStatus,
                     'charge_id' => $quote->getPicpayChargeId()
                 ]);
